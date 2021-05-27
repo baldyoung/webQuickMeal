@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<style>
+			.cell {
+				width:200px;
+				height:100px;
+				display:inline-block;
+			}
+			.red {
+				background:red;
+			}
+			.green {
+				background:green;
+			}
+			.black {
+				background:black;
+			}
+			.gray {
+				background:gray;
+			}
+			.pink {
+				background:pink;
+			}
+			.blue {
+				background:blue;
+			}
+		</style>
+	</head>
+	<body>
+		<div style='width:200px; margin:0 auto; border:0px solid; overflow:hidden;'>
+			<div id='sliderContent' style='width:1100px; position:relative; left:0px;'>
+				<div class='cell red'></div><div class='cell green'></div><div class='cell blue'></div><div class='cell black'></div><div class='cell pink'></div>
+			</div>
+		</div>
+		
+		<script>
+			var content = document.getElementById('sliderContent');
+			var t = 0;
+			var p = -1;
+			setInterval(function(){
+				content.style.left = t;
+				if (t <= -800 && p == -1) {
+					p = 1;
+				} else if (t >= 0 && p == 1) {
+					p = -1;
+				}
+				t += p;
+			}, 10);
+		</script>
+	</body>
+</html>

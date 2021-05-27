@@ -1,0 +1,11 @@
+
+
+window对象
+
+window.screen 对象
+screen.availWidth - 可用的屏幕宽度
+screen.availHeight - 可用的屏幕高度
+
+window.history 对象
+history.back() - 与在浏览器点击后退按钮相同
+history.forward() - 与在浏览器中点击向前按钮相同

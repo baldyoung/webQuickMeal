@@ -1,0 +1,242 @@
+<html>
+	<head>
+		<style>
+			.main {
+			}
+			.slider {
+				margin:0 auto;
+				width:100px;
+				padding:10px;
+				background: #fff;
+				border: 1px solid #ccc;
+			}
+			.slider-content {
+				height:300px;
+				overflow:hidden; 
+			}
+			.slider-up-btn {
+				width:30px;
+				height:30px;
+				border-radius:50%;
+				border:1px solid #ccc;
+				margin:0 auto;
+				text-align:center;
+			}
+			.slider-down-btn {
+				width:30px;
+				height:30px;
+				border-radius:50%;
+				border:1px solid #ccc;
+				margin:0 auto;
+				text-align:center;
+			}
+			.slider-cell {
+				width:90px;
+				padding:0px 5px 0px 5px;
+			}
+			.slider-cell div {
+				width:100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class='main'>
+			<input type='button' onclick='slider.start()' style='position:absolute; top:100px; left:50px; width:80px; font-size:29px; font-weight:bolder; color:white; background:black; border-radius:10px;' value='开 始'>
+			<input type='button' onclick='slider.remove()' style='position:absolute; top:150px; left:50px; width:80px; font-size:29px; font-weight:bolder; color:white; background:black; border-radius:10px;' value='移 除'>
+			<input type='button' onclick='selectFileBtn.click()' style='position:absolute; top:200px; left:50px; width:80px; font-size:29px; font-weight:bolder; color:white; background:black; border-radius:10px;' value='文 件'>
+			<input id='selectFileBtn' type='file' style='display:none;'  onchange='readFile()' />
+			<div id='showResult' style='font-size:30px; font-weight:bolder; color:red; text-align: center; padding:80px; height:50px;'></div>
+			<div class='slider'>
+				<!-- <div class='slider-up-btn'>上</div> -->
+				<div class='slider-content'>
+					<div style='position:relative;'>
+						<div class='slider-cell'>
+							<div style='width:90px; height:90px; background:red;'>
+							</div>
+						</div>
+						<div class='slider-cell'>
+							<div style='width:90px; height:90px; background:red;'>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div style='border-top:1px solid; position:relative; top:-150px;'></div>
+				<!-- <div class='slider-down-btn'>下</div> -->
+			</div>
+			
+		</div>
+		<!-- 历史记录 -->
+		<div id='historyArea' style='width:150px; background:gray; border-radius:5px; color:red; position: fixed; top:100px; right:200px; padding:10px 0 10px 5px;'>
+			<h3 style='color:white;'>移除记录</h3>
+		</div>
+		<div id='nameArea' style='width:150px; background:gray; border-radius:5px; color:red; position: fixed; top:100px; right:40px; padding:10px 0 10px 5px;'>
+			<h3 style='color:white;'>参与名单</h3>
+		</div>
+		<script>
+			var resultArea = document.getElementById('showResult');
+			var historyArea = document.getElementById('historyArea');
+			var namesShow = document.getElementById('nameArea');
+			var historyIndex = 1;
+			var slider = {
+				running : false,
+				maxHeight : 0,
+				resultCell : undefined,
+				data : ['red', 'green', 'blue', 'yellow'],
+				init : function() {
+					var target = document.getElementsByClassName('slider-content')[0].children[0];
+					target.innerHTML = '';
+					slider.maxHeight = 0;
+					for(var i=0; i<slider.data.length; i++) {
+						var cell = slider.data[i];
+						var html = "<div class='slider-cell'><div style='text-align:center; font-weight:bolder; font-size:13px; overflow:hidden; height:"+cell.height+"px; background:"+cell.color+"'>"+cell.name+"</div></div>";
+						target.innerHTML += html;
+						slider.maxHeight += cell.height;
+					}
+				},
+				start : function() {//return;
+					if (slider.running) {
+						return;
+					}
+					resultArea.innerText = '';
+					slider.running = true;
+					var i = 0;
+					var targetLen = slider.maxHeight * 20 + slider.getRandomNumber(slider.maxHeight);
+					var speed = 3;
+					var runTime = 0; 
+					var timer;
+					var runCell = 10;
+					function run() {
+						var target = document.getElementsByClassName('slider-content')[0].children[0];
+						target.style.top = '-' + i + 'px';
+						var topCell = slider.getTopCell().children[0];
+						var topHeight = topCell.style.height;
+						topHeight = parseInt(topHeight);
+						if (i >= topHeight) {
+							//console.log(i);
+							i = 0;
+							var t = topCell.parentNode;
+							target.style.top = '-' + i + 'px';
+							target.appendChild(t);
+						} else {
+							i += runCell;
+						}
+						runTime += speed;
+						if (runTime < (targetLen * 0.05)) {
+							speed = 1;
+							runCell = 15;
+						} else if (runTime < (targetLen * 0.6)) {
+							speed = 10;
+							runCell = 12;
+						} else if (runTime < (targetLen * 0.75)) {
+							speed = 70;
+							runCell = 8;
+						} else if (runTime < (targetLen * 0.85)) {
+							speed = 120;
+							runCell = 4;
+						} else if (runTime < (targetLen * 0.95)) {
+							speed = 300;
+							runCell = 2;
+						} else if (runTime <= targetLen) {
+							slider.running = false;
+							setTimeout(function(){
+								slider.showResult();
+							}, 500);
+							return;
+						}
+						timer = setTimeout(run, speed);
+					}
+					timer = setTimeout(run, speed);
+				},
+				getTopCell : function() {
+					var target = document.getElementsByClassName('slider-content')[0].children[0];
+					return target.children[0];
+				},
+				getRandomNumber : function(t) {
+					return Math.round(Math.random() * t);
+				},
+				showResult : function() {
+					var target = document.getElementsByClassName('slider-content')[0].children[0];
+					var len = Math.abs(parseInt(target.style.top));
+					len += 150;
+					var cellList = document.getElementsByClassName('slider-cell');
+					var m = 0;
+					for(var p=0; p<cellList.length; p++) {
+						var tCell = cellList[p].children[0];
+						m += parseInt(tCell.style.height);
+						if (m >= len) {
+							if (resultArea.innerText == '') {
+								resultArea.innerText = tCell.innerText;
+								slider.resultCell = tCell;
+							}
+							break;
+						}
+					}
+				},
+				remove : function() {
+					if (undefined == slider.resultCell) {
+						alert('还未出结果，无法移除单元');
+						return;
+					} 
+					historyArea.innerHTML += historyIndex + '.' + slider.resultCell.innerText + '<br>';
+					slider.maxHeight -= parseInt(slider.resultCell.style.height);
+					slider.resultCell.parentNode.remove();
+					slider.resultCell = undefined;
+				}
+			}
+			
+			//slider.start();
+			
+			// 初始化
+			function init() {
+				if (targetData.length == 0) {
+					slider.data = [
+						{name:'王小明', color:'red', height:30},
+						{name:'牛皮精', color:'yellow', height:130},
+						{name:'汪金魏', color:'green', height:60},
+						{name:'张四峰', color:'blue', height:70},
+						{name:'寒九州', color:'pink', height:80}
+					];
+				} else {
+					slider.data = targetData;
+				}
+				slider.init();
+			}
+			var targetData = [];
+			// 文件读取
+			function readFile() {
+				var codeType = prompt('请输入该文件的编码格式', 'utf-8');
+				var reader = new FileReader();
+				reader.onload = function() {
+					var data = this.result;
+					data = data.replaceAll(/\n/g, ',');
+					data = data.replaceAll(/\r/g, '');
+					names = data.split(',');
+					// namesShow.innerHTML = '';
+					targetData = [];
+					for(var i=0; i<names.length; i+=2) {
+						namesShow.innerHTML += (targetData.length+1) +'.' + names[i] + ' (' + names[i+1] + ')</br>';
+						var temp= {
+							name : names[i],
+							height : parseInt(names[i+1]),
+							color : getRandomColor(),
+						}
+						targetData.push(temp);
+					}
+					init();
+					alert('已载入 '+targetData.length+' 条数据');
+				}
+				reader.readAsText(selectFileBtn.files[0], codeType);
+			}
+			// 根据给定的不同值生成不唯一的颜色
+			function getRandomColor() {
+				var t = 255;
+				var c = 'rgb(' + getRandomNumber(t) + ', ' + getRandomNumber(t) + ', ' + getRandomNumber(t) + ')';
+				return c;
+			}
+			// 获取一个随机整数
+			function getRandomNumber(t) {
+				return Math.round(Math.random() * t);
+			}
+		</script>
+	</body>
+</html>

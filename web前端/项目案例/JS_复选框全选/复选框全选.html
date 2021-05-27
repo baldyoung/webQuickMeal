@@ -1,0 +1,89 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		<div style='min-width: 100px; max-width: 200px; margin:0 auto; background-color: bisque; padding:10px; border-radius:5px;'>
+			<h2>喜欢的游戏</h2>
+			<label>全选</label><input type='checkbox' >
+			<div style=' text-align: center; '>
+				<div>
+					<label>王者荣耀</label>
+					<input type='checkbox' >
+				</div>
+				<div>
+					<label>刺激战场</label>
+					<input type='checkbox' >
+				</div>
+				<div>
+					<label>英雄联盟</label>
+					<input type='checkbox' >
+				</div>
+				<div>
+					<label>绝地求生</label>
+					<input type='checkbox' >
+				</div>
+				<div>
+					<label>亡灵杀手</label>
+					<input type='checkbox' >
+				</div>
+			</div>
+		</div>
+		<script>
+			var inputList = document.getElementsByTagName('input');
+			// 给 每一个复选框添加 点击监听事件
+			for(var i=0; i<inputList.length; i++) {
+				// 第一种方法 获取点击的元素
+				inputList[i].setAttribute("onclick", "inputClick(this)");
+				/* 
+					// 第二种方法 获取点击的元素
+					inputList[i].onclick = function(t){
+					console.log(this);
+				}; */
+			}
+			// 复选框点击事件的响应函数
+			function inputClick(t) {
+				// 获取当前节点的前一个节点
+				var preNode = t.previousElementSibling;
+				// 获取节点中的文本内容
+				var preNodeText = preNode.innerText; 
+				//console.log(t.checked);
+				// 判断点击的按钮是否为 全选按钮
+				if (preNodeText == '全选') {
+					if (t.checked == true) {
+						// 选择 全选
+						for(var i=0; i<inputList.length; i++) {
+							inputList[i].checked = true;
+						}
+					} else {
+						// 取消 全选
+						for(var i=0; i<inputList.length; i++) {
+							inputList[i].checked = false;
+						}
+					}
+				} else {
+					// 检查当前所有的按钮是否多选中了
+					var k = 1;
+					for(; k<inputList.length; k++) {
+						// 判断所有按钮的选中情况
+						if (inputList[k].checked == false) {
+							break;
+						}
+					}
+					// 判断是否全部选中
+					if (k == inputList.length) {
+						inputList[0].checked = true;
+					} else {
+						inputList[0].checked = false;
+					}
+				}
+			}
+			
+			
+		</script>
+		
+		
+	</body>
+</html>

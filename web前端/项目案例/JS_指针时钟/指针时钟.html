@@ -1,0 +1,119 @@
+​
+<html>
+	<head>
+		<style>
+			#mainArea {
+				width:200px;
+				height:200px;
+				border-radius:100px;
+				background:gray;
+				margin:0 auto;
+				margin-top:300px;
+				transform:rotate(90deg);
+			}
+			#houre {
+				position:relative;
+				top:94px;
+				left:0px;
+				transform:rotate(0deg);
+			}
+			#minute {
+				position:relative;
+				top:85px;
+				left:0px;
+				transform:rotate(0deg);
+			}
+			#second {
+				position:relative;
+				top:80px;
+				left:0px;
+				transform:rotate(0deg);
+			}
+			.hzz {
+				width:50%;
+			}
+			.hzzS {
+				width:50%;
+				background:red;
+				height:11px;
+				border-top-left-radius:5px;
+				border-bottom-left-radius:5px;
+				float:right;
+			}
+			.mzz {
+				width:50%;
+			}
+			.mzzS {
+				width:80%;
+				background:blue;
+				height:7;
+				border-top-left-radius:3px;
+				border-bottom-left-radius:3px;
+				float:right;
+			}
+			.szz {
+				width:50%;
+				background:green;
+				height:3px;
+				border-top-left-radius:1px;
+				border-bottom-left-radius:1px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='mainArea'>
+			<div id='houre'>
+				<div class='hzz'>
+					<div class='hzzS'></div>
+					<div style='clear:both;'></div>
+				</div>
+			</div>
+			<div id='minute'>
+				<div class='mzz'>
+					<div class='mzzS'></div>
+					<div style='clear:both;'></div>
+				</div>
+			</div>
+			<div id='second'>
+				<div class='szz'></div>
+			</div>
+		</div>
+		<script>
+			var houreCell = document.getElementById('houre');
+			var minuteCell = document.getElementById('minute');
+			var secondCell = document.getElementById('second');
+			var hN = 0; // 代表当前时针的旋转度数
+			var mN = 0; // 代表当前分针的旋转度数
+			var sN = 0; // 代表当前秒针的旋转度数
+			// 同步当前时间到时钟
+			var currentDateTime = new Date();
+			if (currentDateTime.getHours() > 12) {
+				hN = 360 * ((currentDateTime.getHours()-12) / 12);
+			} else {
+				hN = 360 * (currentDateTime.getHours() / 12);
+			}
+			mN = 360 * (currentDateTime.getMinutes() / 60);
+			sN = 360 * (currentDateTime.getSeconds() / 60);
+			
+			// 利用周期函数实现时钟的转动
+			setInterval(function(){
+				houreCell.style.transform = 'rotate('+hN+'deg)';
+				minuteCell.style.transform = 'rotate('+mN+'deg)';
+				secondCell.style.transform = 'rotate('+sN+'deg)';
+				if (sN >= 360) {
+					sN = 0;
+					mN += 6;
+				}
+				if (mN >= 360) {
+					mN = 0;
+					hN += 6;
+				}
+				if (sN >= 360) {
+					sN = 0;
+				}
+				sN += 6;
+			}, 1000);
+		</script>
+	</body>
+</html>
+​

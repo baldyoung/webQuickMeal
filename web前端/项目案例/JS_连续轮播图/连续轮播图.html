@@ -1,0 +1,115 @@
+<html>
+	<head>
+		<style>
+			.main {
+			}
+			.slider {
+				margin:0 auto;
+				width:100px;
+				padding:10px;
+				background: #fff;
+				border: 1px solid #ccc;
+			}
+			.slider-content {
+				height:300px;
+				overflow:hidden; 
+			}
+			.slider-up-btn {
+				width:30px;
+				height:30px;
+				border-radius:50%;
+				border:1px solid #ccc;
+				margin:0 auto;
+				text-align:center;
+			}
+			.slider-down-btn {
+				width:30px;
+				height:30px;
+				border-radius:50%;
+				border:1px solid #ccc;
+				margin:0 auto;
+				text-align:center;
+			}
+			.slider-cell {
+				width:90px;
+				padding:0px 5px 0px 5px;
+			}
+			.slider-cell div {
+				width:100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class='main'>
+			<div class='slider'>
+				<div class='slider-up-btn'>上</div>
+				<div class='slider-content'>
+					<div style='position:relative;'>
+						<div class='slider-cell'>
+							<div style='width:90px; height:90px; background:red;'>
+							</div>
+						</div>
+						<div class='slider-cell'>
+							<div style='width:90px; height:90px; background:red;'>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div style='border-top:1px solid; position:relative; top:-150px;'></div>
+				<div class='slider-down-btn'>下</div>
+			</div>
+		</div>
+		<script>
+		
+			var slider = {
+				maxHeight : 0,
+				data : ['red', 'green', 'blue', 'yellow'],
+				init : function() {
+					var target = document.getElementsByClassName('slider-content')[0].children[0];
+					target.innerHTML = '';
+					slider.maxHeight = 0;
+					for(var i=0; i<slider.data.length; i++) {
+						var cell = slider.data[i];
+						var html = "<div class='slider-cell'><div style='height:"+cell.height+"px; background:"+cell.name+"'></div></div>";
+						target.innerHTML += html;
+						slider.maxHeight += cell.height;
+					}
+				},
+				start : function() {//return;
+					var i = 0;
+					setInterval(function(){
+						var target = document.getElementsByClassName('slider-content')[0].children[0];
+						target.style.top = '-' + i + 'px';
+						var topCell = slider.getTopCell().children[0];
+						var topHeight = topCell.style.height;
+						topHeight = parseInt(topHeight);
+						if (i >= topHeight) {
+							//console.log(i);
+							i = 0;
+							var t = topCell.parentNode;
+							target.style.top = '-' + i + 'px';
+							target.appendChild(t);
+							
+						} else {
+							i += 1;
+						}
+					}, 10);
+				},
+				getTopCell : function() {
+					var target = document.getElementsByClassName('slider-content')[0].children[0];
+					return target.children[0];
+				}
+			}
+			slider.data = [
+				{name:'red', height:30},
+				{name:'yellow', height:130},
+				{name:'green', height:60},
+				{name:'blue', height:70},
+				{name:'pink', height:80}
+			];
+			slider.init();
+			slider.start();
+		
+		</script>
+	</body>
+</html>

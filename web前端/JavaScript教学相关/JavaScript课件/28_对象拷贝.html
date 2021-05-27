@@ -1,0 +1,198 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<h2>概念</h2>
+
+		<ul>
+			<li>
+				<p>浅拷贝：只拷贝最外面一层的数据；更深层次的对象，只拷贝引用。</p>
+			</li>
+			<li>
+				<p>深拷贝：拷贝多层数据；每一层级别的数据都会拷贝。</p>
+			</li>
+		</ul>
+
+		<p><strong>总结</strong>：</p>
+
+		<p>拷贝引用的时候，是属于<strong>传址</strong>，而非<strong>传值</strong>。关于传值和传址的区别，是很基础的内容，详见《JavaScript 基础/对象简介.md》这篇文章。</p>
+
+		<p>深拷贝会把对象里<strong>所有的数据</strong>重新复制到新的内存空间，是最彻底的拷贝。</p>
+
+		<h2>浅拷贝的实现方式</h2>
+
+		<h3>用 for in 实现浅拷贝（比较繁琐）</h3>
+
+		<pre>
+var obj1 = {
+	name: 'qianguyihao',
+	age: 28,
+	info: {
+		desc: '很厉害',
+	},
+};
+var obj2 = {};
+// 用 for in 将 obj1 的值拷贝给 obj2
+for (var key in obj1) {
+	obj2[key] = obj1[key];
+}
+console.log('obj2:' + JSON.stringify(obj2));
+obj1.info.desc = '永不止步'; // 当修改 obj1 的第二层数据时，obj2的值也会被改变。所以 for in 是浅拷贝
+console.log('obj2:' + JSON.stringify(obj2));</pre>
+
+		<p>上方代码中，用 for in 做拷贝时，只能做到浅拷贝。也就是说，在 obj2 中， name 和 age 这两个属性会单独存放在新的内存地址中，和 obj1 没有关系。但是，<code>obj2.info</code>
+			属性，跟 <code>obj1.info</code>属性，<strong>它俩指向的是同一个堆内存地址</strong>。所以，当我修改 <code>obj1.info</code> 里的值之后，<code>obj2.info</code>的值也会被修改。</p>
+
+		<p>打印结果如下：</p>
+
+		<pre>
+obj2:{"name":"qianguyihao","age":28,"info":{"desc":"很厉害"}}
+
+obj2:{"name":"qianguyihao","age":28,"info":{"desc":"永不止步"}}</pre>
+
+		<h3>用 Object.assgin() 实现浅拷贝（推荐的方式）</h3>
+
+		<p>上面的 for in 方法做浅拷贝过于繁琐。ES6 给我们提供了新的语法糖，通过 <code>Object.assgin()</code> 可以实现<strong>浅拷贝</strong>。</p>
+
+		<p><code>Object.assgin()</code> 在日常开发中，使用得相当频繁，非掌握不可。</p>
+
+		<p><strong>语法</strong>：</p>
+
+		<pre>
+// 语法1
+obj2 = Object.assgin(obj2, obj1);
+
+// 语法2
+Object.assign(目标对象, 源对象1, 源对象2...);</pre>
+
+		<p><strong>解释</strong>：将<code>obj1</code> 拷贝给 <code>obj2</code>。执行完毕后，obj2 的值会被更新。</p>
+
+		<p><strong>作用</strong>：将 obj1 的值追加到 obj2 中。如果对象里的属性名相同，会被覆盖。</p>
+
+		<p>从语法2中可以看出，Object.assign() 可以将多个“源对象”拷贝到“目标对象”中。</p>
+
+		<p><strong>例 1</strong>：</p>
+
+		<pre>
+var obj1 = {
+	name: 'qianguyihao',
+	age: 28,
+	info: {
+		desc: 'hello',
+	},
+};
+// 浅拷贝：把 obj1 拷贝给 obj2。如果 obj1 只有一层数据，那么，obj1 和 obj2 则互不影响
+var obj2 = Object.assign({}, obj1);
+console.log('obj2:' + JSON.stringify(obj2));
+
+obj1.info.desc = '永不止步'; // 由于 Object.assign() 只是浅拷贝，所以当修改 obj1 的第二层数据时，obj2 对应的值也会被改变。
+console.log('obj2:' + JSON.stringify(obj2));</pre>
+
+		<p>代码解释：由于 Object.assign() 只是浅拷贝，所以在当前这个案例中， obj2 中的 name 属性和 age 属性是单独存放在新的堆内存地址中的，和 obj1 没有关系；但是，<code>obj2.info</code>
+			属性，跟 <code>obj1.info</code>属性，<strong>它俩指向的是同一个堆内存地址</strong>。所以，当我修改 <code>obj1.info</code> 里的值之后，<code>obj2.info</code>的值也会被修改。</p>
+
+		<p>打印结果：</p>
+
+		<pre>
+obj2:{"name":"qianguyihao","age":28,"info":{"desc":"hello"}}
+obj2:{"name":"qianguyihao","age":28,"info":{"desc":"永不止步"}}</pre>
+
+		<p><strong>例 2</strong>：</p>
+
+		<pre>
+var myObj = {
+	name: 'qianguyihao',
+	age: 28,
+};
+// 【写法1】浅拷贝：把 myObj 拷贝给 obj1
+var obj1 = {};
+Object.assign(obj1, myObj);
+// 【写法2】浅拷贝：把 myObj 拷贝给 obj2
+var obj2 = Object.assign({}, myObj);
+// 【写法3】浅拷贝：把 myObj 拷贝给 obj31。注意，这里的 obj31 和 obj32 其实是等价的，他们指向了同一个内存地址
+var obj31 = {};
+var obj32 = Object.assign(obj31, myObj);</pre>
+
+		<p>上面这三种写法，是等价的。所以，当我们需要将对象 A 复制（拷贝）给对象 B，不要直接使用 <code>B = A</code>，而是要使用 Object.assign(B, A)。</p>
+
+		<p><strong>例 3</strong>：</p>
+
+		<pre>
+var obj1 = { name: 'qianguyihao', age: 26 };
+var obj2 = { city: 'shenzhen', age: 28 };
+var obj3 = {};
+Object.assign(obj3, obj1, obj2); // 将 obj1、obj2的内容赋值给 obj3
+console.log(obj3); // {name: "qianguyihao", age: 28, city: "shenzhen"}</pre>
+
+		<p>上面的代码，可以理解成：将多个对象（obj1和obj2）合并成一个对象 obj3。</p>
+
+		<p><strong>例4</strong>：【重要】</p>
+
+		<pre>
+var obj1 = {
+	name: 'qianguyihao',
+	age: 28,
+	desc: 'hello world',
+};
+var obj2 = {
+	name: '许嵩',
+	sex: '男',
+};
+// 浅拷贝：把 obj1 赋值给 obj2。这一行，是关键代码。这行代码的返回值也是 obj2
+Object.assign(obj2, obj1);
+console.log(JSON.stringify(obj2));</pre>
+
+		<p>打印结果：</p>
+
+		<pre>
+{"name":"qianguyihao","sex":"男","age":28,"desc":"hello world"}</pre>
+
+		<p>注意，<strong>例 4 在实际开发中，会经常遇到，一定要掌握</strong>。它的作用是：将 obj1 的值追加到 obj2 中。如果两个对象里的属性名相同，则 obj12 中的值会被 obj2 中的值覆盖。</p>
+
+		<h2>深拷贝的实现方式</h2>
+
+		<p>深拷贝其实就是将浅拷贝进行递归。</p>
+
+		<h3>用 for in 递归实现深拷贝</h3>
+
+		<p>代码实现：</p>
+
+		<pre>
+var obj1 = {
+	name: 'qianguyihao',
+	age: 28,
+	info: {
+		desc: 'hello',
+	},
+	color: ['red', 'blue', 'green'],
+};
+var obj2 = {};
+
+deepCopy(obj2, obj1);
+console.log(obj2);
+obj1.info.desc = 'github';
+console.log(obj2);
+
+// 方法：深拷贝
+function deepCopy(newObj, oldObj) {
+	for (var key in oldObj) {
+		// 获取属性值 oldObj[key]
+		var item = oldObj[key];
+		// 判断这个值是否是数组
+		if (item instanceof Array) {
+			newObj[key] = [];
+			deepCopy(newObj[key], item);
+		} else if (item instanceof Object) {
+			// 判断这个值是否是对象
+			newObj[key] = {};
+			deepCopy(newObj[key], item);
+		} else {
+			// 简单数据类型，直接赋值
+			newObj[key] = item;
+		}
+	}
+}</pre>
+	</body>
+</html>

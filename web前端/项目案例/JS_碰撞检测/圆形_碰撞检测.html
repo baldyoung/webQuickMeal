@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<style>
+			#circleA {
+				background:red;
+				width:100px;
+				height:100px;
+				border-radius:50px;
+				position:absolute;
+			}
+			#circleB {
+				background:green;
+				width:100px;
+				height:100px;
+				border-radius:50px;
+				position:absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='textArea' style='font-size:30px;'>
+			两个圆的圆心之间的距离 如果 小于两个圆的半径和 则 两个圆一定碰撞了！
+		</div>
+		<div id='circleA' style='left:500px; top:400px;'></div>
+		<div id='circleB' style='left:300px; top:290px;'></div>
+		<script>
+			var circleACell = document.getElementById('circleA');
+			var circleBCell = document.getElementById('circleB');
+			var textAreaCell = document.getElementById('textArea');
+			window.onmousemove = function(){
+				var e = event;
+				circleBCell.style.top = e.clientY;
+				circleBCell.style.left = e.clientX;
+				if (checkPZ(circleACell, circleBCell)) {
+					textAreaCell.innerHTML = '检测到碰撞!';
+				} else {
+					textAreaCell.innerHTML = '';
+				}
+			}
+			function checkPZ(cellA, cellB) {
+				// 获取并转化cellA的左上角的坐标
+				cellA.currentLeft = parseInt(cellA.style.left.substring(0, cellA.style.left.length - 2));
+				cellA.currentTop = parseInt(cellA.style.top.substring(0, cellA.style.top.length - 2));
+				// 获取并转化cellB的左上角的坐标
+				cellB.currentLeft = parseInt(cellB.style.left.substring(0, cellB.style.left.length - 2));
+				cellB.currentTop = parseInt(cellB.style.top.substring(0, cellB.style.top.length - 2));
+				var cA = {
+					x : cellA.currentLeft + (cellA.clientWidth / 2),
+					y : cellA.currentTop + (cellA.clientHeight / 2)
+				}
+				var cB = {
+					x : cellB.currentLeft + (cellB.clientWidth / 2),
+					y : cellB.currentTop + (cellB.clientHeight / 2)
+				}
+				// 求出两个圆心之间的距离
+				var t = (cA.x - cB.x) * (cA.x - cB.x) + (cA.y - cB.y) * (cA.y - cB.y);
+				t = Math.sqrt(t);
+				// 求出两个圆的半径和
+				var k = (cellA.clientWidth + cellB.clientWidth) / 2;
+				if (t < k) {
+					return true;
+				}
+				return false;
+			}
+		</script>
+	</body>
+</html>

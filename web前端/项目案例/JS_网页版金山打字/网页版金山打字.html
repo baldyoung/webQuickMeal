@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+	<style>
+		input {
+			outline :none;
+			padding-left:10px;
+		}
+		* {
+		    margin: 0;
+		    padding: 0;
+		}
+		body {
+		    background-color: pink;
+		}
+		li {
+		    list-style:none;
+		}
+		.box {
+		    width: 980px;
+		    height: 700px;
+		    background-color: cornflowerblue;
+		    margin: 10px auto;
+		    border-radius: 5px;
+		}
+		.box .top {
+		    width: 100%;
+		    height: 105px;
+		    background-color: #41a325;
+		}
+		.box .top .logo img {
+		    margin-left: 43px;
+		    margin-top: 18px;
+		}
+		.bottom {
+		    position: relative;
+		    width: 100%;
+		    height: 595px;
+		    background-color: #f5ffef;
+		}
+		.bottom .shuru {
+		    position: absolute;
+		    top: 80px;
+		    left: 52px;
+		    width: 877px;
+		    height: 70px;
+		    background-color: #fff; 
+		    border: 1px solid #d5d5d5;
+		}
+		.shuru ul {
+		    margin-top: 10px;
+		    margin-left: 10px;
+		}
+		.shuru ul li {
+		    font-size: 18px;
+		    list-style:none;
+		    float: left;
+		    padding-right: 20px;
+		}
+		.bottom .jianp {
+		    position: absolute;
+		    left: 52px;
+		    top: 193px;
+		    width: 877px;
+		     height: 292px;
+		    background-color:#9c9ba6;
+		    padding-top: 5px;
+		    border-radius: 5px;
+		}
+		.jianp li {
+		    float: left;
+		    width: 51px;
+		    height: 51px;
+		    background-color: #d0d6ea;
+		    border: 1px solid #000;
+		    text-align: center;
+		    margin-left: 5px;
+		    border-radius: 5px;
+		}
+		.jianp .z_2 li {
+		    margin-top: 5px;
+		} 
+		.jianp .z_2 .tab {
+		    line-height: 51px;
+		    width: 77px;
+		    height: 51px;
+		}
+		
+		.qys {
+		    line-height: 51px;
+		}
+		.z_3 li {
+		    margin-top: 5px;
+		}
+		.z_3 .dax {
+		    width: 104px;
+		    height: 52px;
+		    line-height: 51px;
+		}
+		.jianp .z_2 .huic {
+		    width: 83px;
+		    height: 51px;
+		    background-color:darkseagreen;
+		}
+		.bottom .z_3 .huic_1 {
+		    width: 114px;
+		    height: 52px;
+		    background-color: darkseagreen;
+		}
+		.huiche {
+		    position: absolute;
+		    left: 785px;
+		    top: 104px;
+		    width: 83px;
+		    height: 17px;
+		    background-color: darkseagreen;
+		    border-left: 1px solid #000;
+		    border-right: 1px solid #000;
+		    
+		}
+		.zuih {
+		    position: absolute;
+		    left: 786px;
+		    top: 104px;
+		    width: 83px;
+		    height: 24px;
+		    background-color: darkseagreen;
+		    border-left: 0;
+		    border-right: 1px solid #000;
+		}
+		.z_4 li{
+		    margin-top: 5px;
+		}
+		.z_4 .shift_left {
+		    width: 138px;
+		    height: 52px;
+		    line-height: 51px;
+		}
+		.z_4 .shift_right {
+		    width: 138px;
+		    height: 52px;
+		    line-height: 51px;
+		}
+		.z_5 li {
+		    margin-top: 5px;
+		}
+		.z_5 .ctrl {
+		    width: 77px;
+		    height: 52px;
+		    line-height: 51px;
+		}
+		.z_5 .kge {
+		    width: 405px;
+		    height: 52px;
+		    line-height: 51px;
+		}
+		.z_1 li {
+		    background-color: #e6dded;
+		}
+		.z_2 li {
+		    background-color: #cad1e7;
+		}
+		.z_3 li {
+		    background-color: #decdd7;
+		}
+		.z_4 li {
+		    background-color: #e6dded;
+		}
+	</style>
+</head>
+<body>
+    <div class="box">
+        <div class="top">
+            <div class="logo"></div>
+        </div>
+        <div class="bottom">
+            <div class="shuru" style='height:auto;'>
+                <div >
+					<input id='systemOutputArea' type='text' style='width:100%; line-height: 40px; font-size:20px; background:; border:0px solid; box-sizing: border-box; border-bottom:1px solid gray; ' readonly />
+				</div>
+				<div >
+					<input id='userInputArea' type='text' style='width:100%; line-height: 40px; font-size:20px; background:; border:0px solid; box-sizing: border-box; padding-left:10px;' />
+				</div>
+            </div>
+            <div class="jianp">
+                <ul class="z_1">
+                    <li>~ <br> `</li>
+                    <li>! <br> 1</li>
+                    <li>@ <br> 2</li>
+                    <li># <br> 3</li>
+                    <li>$ <br> 4</li>
+                    <li>% <br> 5</li>
+                    <li>^ <br> 6</li>
+                    <li>& <br> 7</li>
+                    <li>* <br> 8</li>
+                    <li>( <br> 9</li>
+                    <li>) <br> 0</li>
+                    <li>_ <br> -</li>
+                    <li>+ <br> =</li>
+                    <li>| <br> \</li>
+                <li>Back<br> space</li>
+                </ul>
+                <ul class="z_2">
+                    <li class="tab">Tab</li>
+                    <li class="qys">Q</li>
+                    <li class="qys">W</li>
+                    <li class="qys">E</li>
+                    <li class="qys">R</li>
+                    <li class="qys">T</li>
+                    <li class="qys">Y</li>
+                    <li class="qys">U</li>
+                    <li class="qys">I</li>
+                    <li class="qys">O</li>
+                    <li class="qys">P</li>
+                    <li>{ <br>[</li>
+                    <li>} <br>]</li>
+                    <li class="huic"></li>
+                </ul>
+                <ul class="z_3">
+                    <li class="dax">Caps Lock</li>
+                    <li class="qys">A</li>
+                    <li class="qys">S</li>
+                    <li class="qys">D</li>
+                    <li class="qys">F</li>
+                    <li class="qys">G</li>
+                    <li class="qys">H</li>
+                    <li class="qys">J</li>
+                    <li class="qys">K</li>
+                    <li class="qys">L</li>
+                    <li>: <br>; </li>
+                    <li>" <br>'</li>
+                    <li class="huic_1"></li>
+                </ul>
+                <div class="huiche"> </div>
+                <div class="zuih">&nbsp;&nbsp;&nbsp;&nbsp;Enter</div>
+                <ul class="z_4">
+                    <li class="shift_left">Shift</li>
+                    <li class="qys">Z</li>
+                    <li class="qys">X</li>
+                    <li class="qys">C</li>
+                    <li class="qys">V</li>
+                    <li class="qys">B</li>
+                    <li class="qys">N</li>
+                    <li class="qys">M</li>
+                    <li> < <br>,</li>
+                    <li> > <br>.</li>
+                    <li> ? <br>/</li>
+                    <li class="shift_right">Shift</li>
+                </ul>
+                <ul class="z_5">
+                    <li class="ctrl">Ctrl</li>
+                    <li></li>
+                    <li class="qys">Alt</li>
+                    <li class="kge"></li>
+                    <li class="qys">Alt</li>
+                    <li></li>
+                    <li></li>
+                    <li class="ctrl">Ctrl</li>
+                </ul>
+            </div>
+        </div>
+		<div id='currentInfo'></div>
+	</div>
+	<script>
+		var words = [
+			'this is a test words!',
+			'user system error message information tom jack marry no maney for happy',
+			'day year month week work sleep.'
+		];
+		var currentIndex = 0;
+		var systemOutputAreaCell = document.getElementById('systemOutputArea');
+		var userInputAreaCell = document.getElementById('userInputArea');
+		var currentInfoCell = document.getElementById('currentInfo');
+		systemOutputAreaCell.value = words[currentIndex];
+		var startDateTime = undefined;
+		var totalInputCharNumber = 0;
+		// 创建一个实时更新打字速度的周期函数
+		var timer = setInterval(function() {
+			if (undefined == startDateTime) {
+				return;
+			}
+			var temp = userInputAreaCell.value;
+			var currentDateTime = new Date().getTime();
+			var t = (currentDateTime - startDateTime) / 1000;
+			var result = Math.ceil((totalInputCharNumber + temp.length) / t); // 计算每秒的字数
+			currentInfoCell.innerHTML = '速度:' + result + '字/秒';
+			currentInfoCell.innerHTML += ' （' + (result * 60) + '字/分钟）';
+		}, 500);
+		// 监听键盘按键的点击事件（按键松开事件）
+		window.onkeyup = function() {
+			var temp = userInputAreaCell.value;
+			console.log(temp.length+','+words[currentIndex].length);
+			if (undefined == startDateTime) {
+				startDateTime = new Date().getTime();
+			}
+			if (temp.length >= words[currentIndex].length) {
+				currentIndex ++;
+				if (currentIndex == words.length) {
+					clearInterval(timer);
+					alert('没有文字了\n'+currentInfoCell.innerHTML);
+					return;
+				}
+				totalInputCharNumber += temp.length;
+				systemOutputAreaCell.value = words[currentIndex];
+				userInputAreaCell.value = '';
+			}
+		}
+	</script>
+</body>
+</html>

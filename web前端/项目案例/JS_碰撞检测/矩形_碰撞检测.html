@@ -1,0 +1,85 @@
+<html>
+	<head>
+	</head>
+	<body style='height:1000px;'>
+		<div id='redDiv' style='width:80px; height:80px; background:red; position:absolute; top:400px; left:800px;'></div>
+		<div id='greenDiv' style='width:80px; height:80px; background:green; position:absolute; top:550; left:850px;'></div>
+		<div id='resultArea' style='height:100px; overflow:auto;'></div>
+		<script>
+			// 红色方块
+			var a = document.getElementById('redDiv');
+			// 绿色方块
+			var b = document.getElementById('greenDiv');
+			// 结果区域
+			var resultAreaCell = document.getElementById('resultArea');
+			//通过鼠标事件让方块跟着鼠标移动
+			window.onmousemove = mouseMoveFunction;
+			function mouseMoveFunction(event) {
+				var e = event || window.event;
+				if (b != undefined) {
+					b.style.top = e.clientY - 20 + 'px';
+					b.style.left = e.clientX - 20 + 'px';
+					if(pgCheck(b,a)) {
+						resultAreaCell.innerHTML = '<h3 style="color:red;">检测碰撞</h3>';
+					} else {
+						resultAreaCell.innerHTML = '';
+					}
+				}
+			}
+			// 将html元素的碰撞检测封装到一个函数中
+			function pgCheck(cellA, cellB) {
+				// 转换两个元素左上角的坐标（将带px的字符串转换为整数值）
+				cellA.currentLeft = parseInt(cellA.style.left.substring(0, cellA.style.left.length - 2));
+				cellA.currentTop = parseInt(cellA.style.top.substring(0, cellA.style.top.length - 2));
+				cellB.currentLeft = parseInt(cellB.style.left.substring(0, cellB.style.left.length - 2));
+				cellB.currentTop = parseInt(cellB.style.top.substring(0, cellB.style.top.length - 2));
+				if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				// 将cellA 与 cellB进行交换
+				var t = cellA;
+				cellA = cellB;
+				cellB = t;
+				if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				return false;
+			}
+				
+		</script>
+	</body>
+</html>

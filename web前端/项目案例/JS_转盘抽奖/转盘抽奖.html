@@ -1,0 +1,113 @@
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>幸运转盘</title>
+		<style>
+			.main {
+				width:600px;
+				margin:0 auto;
+				background:rgb(233, 233, 233, 0.7);
+			}
+			.top {
+				padding:10px 10px;
+			}
+			.titleCell {
+				text-align:center;
+			}
+			.content {
+				background:rgb(233, 233, 233, 0.7);
+				border-top:5px solid white;
+				padding:5px 5px;
+			}
+			.box {
+				width:350px;
+				height:350px;
+				border-radius:175px;
+				background:rgb(66, 90, 73);
+				margin:0 auto;
+				display:flex;
+				flex-wrap:wrap;
+			}
+			.bottom{
+			}
+			.zd {
+				//animation: move 6s linear infinite;
+			}
+			@keyframes move {
+				0% {
+					transform:rotate(0deg);
+				}
+				100% {
+					transform:rotate(360deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class='main'>
+			<div class='top' >
+				<div class='titleCell'>
+					<h1>幸运转盘</h1>
+				</div>
+			</div>
+			<div class='content'>
+				<div class='box'>
+					<div style='box-sizing:border-box; width:175px; height:175px; border-right:1px solid black; border-bottom:1px solid black;'></div>
+					<div style='box-sizing:border-box; width:175px; height:175px; border-bottom:1px solid black;'></div>
+					<div style='box-sizing:border-box; width:175px; height:175px; border-right:1px solid black; '></div>
+					<div style='box-sizing:border-box; width:175px; height:175px; '></div>
+					<div style='box-sizing:border-box; width:175px; height:175px; border-top:1px solid black; position:relative; top:-231px; left:-31px; transform:rotate(30deg); '></div>
+					<div id='zz' class='zd' style='box-sizing:border-box; width:100%; height:1px; background:; position:relative; top:-351px;'>
+						<div id='zz-s' style='background:red; width:49%; height:1px;'></div>
+					</div>
+					<div style='position:relative; top:-440px; left:220px; font-weight:bolder;'>下次一定</div>
+					<div style='position:relative; top:-280px; left:155px; font-weight:bolder; color:green; '>再来一次</div>
+					<div style='position:relative; top:-280px; left:-50px; font-weight:bolder;'>就差一点</div>
+					<div style='position:relative; top:-390px; left:-150px; font-weight:bolder; color:yellow;'>特 等 奖</div>
+					<div style='position:relative; top:-450px; left:-150px; font-weight:bolder; color:blue; '>幸 运 奖</div>
+					<button onclick='start()' style='width:66px; height:66px; border-radius:33px; outline:none; border:1px solid; position:relative; top:-408px; left:142px; color:red;'>开始</button>
+				</div>
+			</div>
+			<div class='bottom'>
+			</div>
+		</div>
+		<script>
+			var zzCell = document.getElementById('zz');
+			var timer;
+			var result;
+			function start() {
+				if (undefined != timer) {
+					return;
+				}
+				result = randNumber(360);
+				var ac = 1080 + result;
+				var i=0;
+				timer = setInterval(function() {
+					zzCell.style.transform = 'rotate('+i + 'deg)';
+					if (i >= ac) {
+						clearInterval(timer);
+						timer = undefined;
+						setTimeout(function() {
+							if (result > 0 && result < 30) {
+								alert('恭喜中了 特等奖 ');
+							} else if (result < 90) {
+								alert('恭喜中了 幸运奖 ');
+							} else if (result > 180 && result < 270) {
+								alert('再来一次哦！');
+							} else {
+								alert('恭喜充值智商税');
+							}
+						}, 500);
+						return;
+					}
+					i++;
+				}, 3);
+			}
+			// 随机生成0到n之间的一个整数
+			function randNumber(n) {
+				return Math.ceil(Math.random() * n);
+			}
+		</script>
+	</body>
+</html>
+	

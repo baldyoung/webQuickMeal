@@ -1,0 +1,408 @@
+<!DOCTYPE >
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+		<title>超级阉割版 中国象棋</title>
+		<style>
+			.cell {
+				width: 50px;
+				height: 50px;
+				/* display: inline-block; */
+				float:left;
+				border: 1px solid red;
+				box-sizing: border-box;
+				position: relative;
+			} 
+			.cellA {
+				width: 50px;
+				height: 50px;
+				display: inline-block; 
+				border: 1px solid red;
+				box-sizing: border-box;
+				position: relative;
+			} 
+			.noBorder {
+				border: 0px dashed paleturquoise ! important;
+			} 
+			.black {
+				background-color: black;
+			} 
+			.qz {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background-color: gray;
+			} 
+			.pink {
+				background-color: pink;
+			}
+			.chess {
+				display:inline-block;
+				width:40px;
+				height:40px;
+				padding:3px; 
+				border:0px dashed pink;
+				z-index:100;
+				position: relative;
+			}
+			.chessContent {
+				width:100%;
+				height:100%;
+				border-radius:50%;
+				background:rgb(175, 149, 124);
+				text-align: center;
+				font-size:20px;
+				font-weight:bolder;
+				line-height: 33px;
+				border:3px solid rgb(148, 118, 90);
+				box-sizing: border-box;
+				cursor:pointer;
+			}
+			.chessSelected {
+				background:orange;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='main' style='padding-left:25px; padding-top:50px; min-width:380px; margin:0 auto;'>
+			<div style='width:450px; padding-bottom:90px; padding-top:10px; text-align: center; margin:0 auto; position: relative; left:-25px;' >
+				<button onclick='readyStart()' style='cursor:pointer; font-size:20px; height:35px; width:70px; background: black; color:white; border-radius:5px; line-height: 30px;'>重 置</button>
+			</div>
+			<div style='width:450px; margin:0 auto; '>
+				<!-- 黑色棋子的棋盘 -->
+				<div>
+					<div id='blackPanelB' style='display:;'>
+					</div>
+					<div id='blackPanelA' style='background:; width:450px; height:250px; position:relative; top:-225px; left:-25px; '>
+					</div>
+					<!-- 斜线的绘制 -->
+					<div style='border-top:1px dashed red; width:139px; background:; transform: rotate(45deg); position:relative; top:-400px; left:131px;'></div>
+					<div style='border-top:1px dashed red; width:139px; background:; transform: rotate(135deg); position:relative; top:-401px; left:130px;'></div>
+				</div>
+				<!-- 红色棋子的棋盘 -->
+				<div style='position:relative; top:-200px; display:;'>
+					<div id='redPanelB' style=''>
+					</div>
+					<div id='redPanelA' style='background:; width:450px; height:250px; position:relative; top:-225px; left:-25px; '>
+					</div>
+					<!-- 斜线的绘制 -->
+					<div style='border-top:1px dashed red; width:139px; background:; transform: rotate(45deg); position:relative; top:-300px; left:131px;'></div>
+					<div style='border-top:1px dashed red; width:139px; background:; transform: rotate(135deg); position:relative; top:-301px; left:130px;'></div>
+				</div>
+				<div style='height:0px; background-color: gray; '></div>
+				<!-- 棋子存放区域 -->
+				<div id='chessHome' style='width:450px; border:1px solid gray; background:; position:relative; top:-400px; left:-25px;'>
+				</div>
+			</div>
+		</div>
+		
+		<script>
+			var maxScreenWidth = screen.availWidth;
+			var pw = (maxScreenWidth - 600) / 2;
+			//console.log(pw);
+			if (pw > 100) {
+				//document.getElementById('main').style.paddingLeft = pw + 'px';
+			}
+			// 游戏初始化函数
+			function init() {
+				createChess();
+				createRedPanel();
+				createBlackPanel();
+				start();
+			}
+			window.onload = function() {
+				init();
+			}
+			function readyStart() {
+				if (confirm('确定重新开始吗?')) {
+					start();
+				}
+			}
+			// 棋子们
+			var chessArray = [];
+			// 棋子暂留区
+			var chessHomeCell = document.getElementById('chessHome');
+			// 绘制黑色棋子的棋盘
+			function createBlackPanel() {
+				var PA = document.getElementById('blackPanelA');
+				var PB = document.getElementById('blackPanelB');
+				PA.innerHTML = '';
+				// 绘制棋子容器
+				for(var i=1; i<=5; i++) {
+					var html = "";
+					for(var j=1; j<=9; j++) {
+						html += "<div onclick='clickSite(this)' class='cell noBorder' id='x"+j+"y"+i+"'></div>";
+					}
+					PA.innerHTML += html;
+				}
+				PB.innerHTML = '';
+				// 绘制棋盘样式
+				for(var i=1; i<=4; i++) {
+					var html = '';
+					for(var j=1; j<=8; j++) {
+						html += "<div class='cellA'></div>";
+					}
+					html += '<br>';
+					PB.innerHTML += html;
+				}
+			}		
+			// 绘制红色棋子的棋盘
+			function createRedPanel() {
+				var PA = document.getElementById('redPanelA');
+				var PB = document.getElementById('redPanelB');
+				PA.innerHTML = '';
+				for(var i=1; i<=5; i++) {
+					var html = "";
+					for(var j=1; j<=9; j++) {
+						html += "<div  onclick='clickSite(this)' class='cell noBorder' id='Hx"+j+"y"+i+"'></div>";
+					}
+					//html += '<br>';
+					PA.innerHTML += html;
+				}
+				PB.innerHTML = '';
+				for(var i=1; i<=4; i++) {
+					var html = '';
+					for(var j=1; j<=8; j++) {
+						html += "<div class='cellA'></div>";
+					}
+					html += '<br>';
+					PB.innerHTML += html;
+				}
+			}
+			// --------------------- 
+			// 创建棋子
+			function createChess() {
+				var redChessNames = ['将', '士', '士', '象', '象', '马', '马', '车', '车', '炮', '炮', '兵', '兵', '兵', '兵', '兵'];
+				var blackChessNames = ['帅', '士', '士', '象', '象', '马', '马', '车', '车', '炮', '炮', '兵', '兵', '兵', '兵', '兵'];
+				
+				chessHomeCell.innerHTML = '';
+				// 绘制黑色棋子
+				for(var i=0; i<blackChessNames.length; i++) {
+					var html = "<div class='chess'><div onclick='clickChess(this)' chessType='black' class='chessContent'>"+blackChessNames[i]+"</div></div>";
+					chessHomeCell.innerHTML += html;
+				}
+				// 绘制红色棋子
+				for(var i=0; i<redChessNames.length; i++) {
+					var html = "<div class='chess'><div onclick='clickChess(this)' chessType='red' class='chessContent' style='color:red;'>"+redChessNames[i]+"</div></div>";
+					chessHomeCell.innerHTML += html;
+				}
+				
+			}
+			// 当前选中的棋子
+			var currentSelectedChess;
+			// 棋子点击函数
+			function clickChess(t) {
+				if (currentSelectedChess != undefined) {
+					currentSelectedChess.setAttribute('class', 'chessContent');
+					if(eat(currentSelectedChess, t)) {
+						currentSelectedChess = undefined;
+						return;
+					}
+				}
+				if (currentSelectedChess == t) {
+					currentSelectedChess = undefined;
+				} else {
+					t.setAttribute('class', 'chessContent chessSelected');
+					currentSelectedChess = t;
+				}
+			}
+			// 棋盘位置点击函数
+			function clickSite(t) {
+				if (t.innerHTML == '' && currentSelectedChess != undefined) {
+					t.appendChild(currentSelectedChess.parentElement);
+					//t.style.top = '-18px';
+					currentSelectedChess.setAttribute('class', 'chessContent');
+					currentSelectedChess = undefined;
+				}
+			}
+			// 获取指定的棋子(指定颜色和棋子名字)
+			function getChess(c, n) {
+				for(var i=0; i<chessArray.length; i++) {
+					var chess = chessArray[i];
+					//console.log(chess.innerText+"->"+chess.getAttribute('chessType'));
+					if (c != chess.getAttribute('chessType')) {
+						continue;
+					}
+					if (n == chess.innerText) {
+						chessArray.splice(i, 1);
+						return chess;
+					}
+				}
+			}
+			// -----------------------------------
+			// 游戏开始
+			function start() {
+				chessArray = [];
+				// 将所有创建的棋子放到数组中
+				var chessList = document.getElementsByClassName('chessContent');
+				for(var i=0; i<chessList.length; i++) {
+					var chess = chessList[i];
+					chessArray.push(chess);
+				}
+				initChessPosition();
+			}
+			
+			// 初始化棋子的位置
+			function initChessPosition() {
+				
+				// 摆放红色棋子的位置 -------------------- 1
+				var chessPosition = [{
+					site : 'x1y1',
+					chessName : '车',
+					colorType : 'red'
+				},{
+					site : 'x2y1',
+					chessName : '马',
+					colorType : 'red'
+				},{
+					site : 'x3y1',
+					chessName : '象',
+					colorType : 'red'
+				},{
+					site : 'x4y1',
+					chessName : '士',
+					colorType : 'red'
+				},{
+					site : 'x5y1',
+					chessName : '将',
+					colorType : 'red'
+				},{
+					site : 'x6y1',
+					chessName : '士',
+					colorType : 'red'
+				},{
+					site : 'x7y1',
+					chessName : '象',
+					colorType : 'red'
+				},{
+					site : 'x8y1',
+					chessName : '马',
+					colorType : 'red'
+				},{
+					site : 'x9y1',
+					chessName : '车',
+					colorType : 'red'
+				},{
+					site : 'x2y3',
+					chessName : '炮',
+					colorType : 'red'
+				},{
+					site : 'x8y3',
+					chessName : '炮',
+					colorType : 'red'
+				},{
+					site : 'x1y4',
+					chessName : '兵',
+					colorType : 'red'
+				},{
+					site : 'x3y4',
+					chessName : '兵',
+					colorType : 'red'
+				},{
+					site : 'x5y4',
+					chessName : '兵',
+					colorType : 'red'
+				},{
+					site : 'x7y4',
+					chessName : '兵',
+					colorType : 'red'
+				},{
+					site : 'x9y4',
+					chessName : '兵',
+					colorType : 'red'
+				},
+				// --------------- 黑色
+				{
+					site : 'Hx1y5',
+					chessName : '车',
+					colorType : 'black'
+				},{
+					site : 'Hx2y5',
+					chessName : '马',
+					colorType : 'black'
+				},{
+					site : 'Hx3y5',
+					chessName : '象',
+					colorType : 'black'
+				},{
+					site : 'Hx4y5',
+					chessName : '士',
+					colorType : 'black'
+				},{
+					site : 'Hx5y5',
+					chessName : '帅',
+					colorType : 'black'
+				},{
+					site : 'Hx6y5',
+					chessName : '士',
+					colorType : 'black'
+				},{
+					site : 'Hx7y5',
+					chessName : '象',
+					colorType : 'black'
+				},{
+					site : 'Hx8y5',
+					chessName : '马',
+					colorType : 'black'
+				},{
+					site : 'Hx9y5',
+					chessName : '车',
+					colorType : 'black'
+				},{
+					site : 'Hx2y3',
+					chessName : '炮',
+					colorType : 'black'
+				},{
+					site : 'Hx8y3',
+					chessName : '炮',
+					colorType : 'black'
+				},{
+					site : 'Hx1y2',
+					chessName : '兵',
+					colorType : 'black'
+				},{
+					site : 'Hx3y2',
+					chessName : '兵',
+					colorType : 'black'
+				},{
+					site : 'Hx5y2',
+					chessName : '兵',
+					colorType : 'black'
+				},{
+					site : 'Hx7y2',
+					chessName : '兵',
+					colorType : 'black'
+				},{
+					site : 'Hx9y2',
+					chessName : '兵',
+					colorType : 'black'
+				}
+				];
+				for(var i=0; i<chessPosition.length; i++) {
+					var temp = chessPosition[i];
+					var site = document.getElementById(temp.site);
+					var chess = getChess(temp.colorType, temp.chessName);
+					site.appendChild(chess.parentElement);
+				}
+				// 摆放黑色棋子的位置 --------------------- 2
+				
+				
+			}
+			
+			// 吃子检测与操作 ----------------------- 3
+			function eat(lastChess, nextChess) {
+				if (lastChess.getAttribute('chessType') == nextChess.getAttribute('chessType')) {
+					return false;
+				}
+				var site = nextChess.parentElement.parentElement;
+				chessHomeCell.appendChild(nextChess.parentElement);
+				site.appendChild(lastChess.parentElement);
+				return true;
+			}
+			
+			
+		</script>
+		
+	</body>
+</html>

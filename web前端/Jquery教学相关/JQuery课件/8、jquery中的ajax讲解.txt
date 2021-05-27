@@ -1,0 +1,19 @@
+ajax
+ajax 请求
+$.ajax(url,[settings])
+load(url,[data],[callback])
+$.get(url,[data],[fn],[type])
+$.getJSON(url,[data],[fn])
+$.getScript(url,[callback])
+$.post(url,[data],[fn],[type])
+ajax 事件
+ajaxComplete(callback)
+ajaxError(callback)
+ajaxSend(callback)
+ajaxStart(callback)
+ajaxStop(callback)
+ajaxSuccess(callback)
+其它
+$.ajaxSetup([options])
+serialize()
+serializearray()

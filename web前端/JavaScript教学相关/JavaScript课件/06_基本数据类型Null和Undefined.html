@@ -1,0 +1,128 @@
+<!-- saved from url=(0152)file:///C:/Users/Administrator/Desktop/JavaScript%E6%95%99%E6%A1%88/06_%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8BNull%E5%92%8CUndefined.html -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<p>很多其他的语言中，只有 null；但 JS 语言中，既有 null，又有 undefined。很多人会弄混，由此觉得 JS 语言很麻烦。其实不然，学习完这篇文章后，你会发现 null 和 undefined 的区别很容易理解。</p>
+
+		<h2>Null：空对象</h2>
+
+		<p>null 专门用来定义一个<strong>空对象</strong>（例如：<code>let a = null</code>）。</p>
+
+		<p>如果你想定义一个变量用来保存引用类型，但是还没想好放什么内容，这个时候，可以在初始化时将其设置为 null。</p>
+
+		<p>比如：</p>
+
+		<pre>
+let myObj = null;
+cosole.log(typeof myObj); // 打印结果：object</pre>
+
+		<p>补充：</p>
+
+		<ul>
+			<li>
+				<p>Null 类型的值只有一个，就是 null。比如 <code>let a = null</code>。</p>
+			</li>
+			<li>
+				<p>使用 typeof 检查一个 null 值时，会返回 object。</p>
+			</li>
+		</ul>
+
+		<h2>undefined</h2>
+
+		<h3>case1：变量已声明，未赋值时</h3>
+
+		<p><strong>声明</strong>了一个变量，但没有<strong>赋值</strong>，此时它的值就是 <code>undefined</code>。举例：</p>
+
+		<pre>
+let name;
+console.log(name); // 打印结果：undefined
+console.log(typeof name); // 打印结果：undefined</pre>
+
+		<p>补充：</p>
+
+		<ul>
+			<li>
+				<p>Undefined 类型的值只有一个，就是 undefind。比如 <code>let a = undefined</code>。</p>
+			</li>
+			<li>
+				<p>使用 typeof 检查一个 undefined 值时，会返回 undefined。</p>
+			</li>
+		</ul>
+
+		<h3>case2：变量未声明（未定义）时</h3>
+
+		<p>如果你从未声明一个变量，就去使用它，则会报错（这个大家都知道）；此时，如果用 <code>typeof</code> 检查这个变量时，会返回 <code>undefined</code>。举例：</p>
+
+		<pre>
+console.log(typeof a); // undefined
+console.log(a); // 打印结果：Uncaught ReferenceError: a is not defined</pre>
+
+		<h3>case3：函数无返回值时</h3>
+
+		<p>如果一个函数没有返回值，那么，这个函数的返回值就是 undefined。</p>
+
+		<p>或者，也可以这样理解：在定义一个函数时，如果末尾没有 return 语句，那么，其实就是 <code>return undefined</code>。</p>
+
+		<p>举例：</p>
+
+		<pre>
+function foo() {}
+console.log(foo()); // 打印结果：undefined</pre>
+
+		<h3>case4：调用函数时，未传参</h3>
+
+		<p>调用函数时，如果没有传参，那么，这个参数的值就是 undefined。</p>
+
+		<p>举例：</p>
+
+		<pre>
+function foo(name) {
+	console.log(name);
+}
+foo(); // 调用函数时，未传参。执行函数后的打印结果：undefined</pre>
+
+		<p>实际开发中，如果调用函数时没有传参，我们可以给形参设置一个默认值：</p>
+
+		<pre>
+function foo(name) {
+	name = name || 'qianguyihao';
+}
+foo();</pre>
+
+		<p>等学习了 ES6 之后，上方代码也可以这样写：</p>
+
+		<pre>
+function foo(name = 'qianguyihao') {}
+foo();</pre>
+
+		<h2>其他区别</h2>
+
+		<p>null 和 undefined 有很大的相似性。看看 <code>null == undefined</code> 的结果为 <code>true</code> 也更加能说明这点。</p>
+
+		<p>但是 <code>null === undefined</code> 的结果是 false。它们虽然相似，但还是有区别的，其中一个区别是，和数字运算时：</p>
+
+		<ul>
+			<li>
+				<p>10 + null 结果为 10。</p>
+			</li>
+			<li>
+				<p>10 + undefined 结果为 NaN。</p>
+			</li>
+		</ul>
+
+		<p>规律总结：</p>
+
+		<ul>
+			<li>
+				<p>任何数据类型和 undefined 运算都是 NaN;</p>
+			</li>
+			<li>
+				<p>任何值和 null 运算，null 可看做 0 运算。</p>
+			</li>
+		</ul>
+
+	</body>
+</html>

@@ -1,0 +1,43 @@
+事件
+页面载入
+ready(fn)
+事件处理
+on(eve,[sel],[data],fn)1.7+
+off(eve,[sel],[fn])1.7+
+bind(type,[data],fn)
+one(type,[data],fn)
+trigger(type,[data])
+triggerHandler(type, [data])
+unbind(type,[data|fn])
+事件委派
+live(type,[data],fn)
+die(type,[fn])
+delegate(sel,[type],[data],fn)
+undelegate([sel,[type],fn]) 1.6*
+事件切换
+hover([over,]out)
+toggle(fn, fn2, [fn3, fn4, ...])
+事件
+blur([[data],fn])
+change([[data],fn])
+click([[data],fn])
+dblclick([[data],fn])
+error([[data],fn])
+focus([[data],fn])
+focusin([data],fn)
+focusout([data],fn)
+keydown([[data],fn])
+keypress([[data],fn])
+keyup([[data],fn])
+mousedown([[data],fn])
+mouseenter([[data],fn])
+mouseleave([[data],fn])
+mousemove([[data],fn])
+mouseout([[data],fn])
+mouseover([[data],fn])
+mouseup([[data],fn])
+resize([[data],fn])
+scroll([[data],fn])
+select([[data],fn])
+submit([[data],fn])
+unload([[data],fn])

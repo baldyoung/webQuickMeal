@@ -1,0 +1,212 @@
+​
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			.bullet {
+				width:10px; 
+				height:10px;
+				background:green;
+				background-size:100% 100%;
+				position:absolute;
+				border-radius : 5px;
+				
+			}
+			.army {
+				position:absolute; 
+				width:50px; 
+				height:50px; 
+				border-radius:0px; 
+				background:red;
+				background-size:100% 100%;
+			}
+		</style>
+	</head>
+	<body style='width:100%; height:100%; background:gray; overflow:hidden;' >
+		<div id='spaceArea'>
+			<div id='user' style=' background:green; background-size:100%; cursor: none; position:absolute; top:0px; left:0px; border-radius:20px; width:40px; height:40px; '></div>
+		</div>
+		<div id='gameOverPage' style='position:absolute; top:0px; left:0px; height:100%; width:100%; padding-top:300px; text-align:center; display:none; font-size:30px; color:red; '> 游戏结束 </div>
+		<script>
+			// 用户元素
+			var userCell = document.getElementById('user');
+			var spaceAreaCell = document.getElementById('spaceArea');
+			// 当前所有的子弹元素
+			var bulletCellList = [];
+			// 当前所有的敌方飞机元素
+			var armyCellList = [];
+			// 每次释放的子弹数量
+			var bulletNumber = 1; 
+			// 设置每一秒诞生一架敌机
+			setInterval(buildArmy, 1000);
+			// 设置鼠标移动响应函数
+			window.onmousemove = mouseMoveFunction;
+			var e;
+			function mouseMoveFunction(event) {
+				e = event || window.event;
+				if (userCell != undefined) {
+					userCell.style.top = e.clientY - 20 + 'px';
+					userCell.style.left = e.clientX - 20 + 'px';
+				}
+			}
+			// ------------------------------------------ 单发模式 start
+			// 设置鼠标点击响应函数
+			// window.onclick = mouseClickFunction; 
+			// ------------------------------------------ end
+			
+			// ------------------------------------------ 自动模式 start
+			/*
+			var timer;
+			window.onmousedown = function () {
+				e = event || window.event;
+				timer = setInterval(mouseClickFunction, 100);
+			};
+			window.onmouseup = function () {
+				clearInterval(timer);
+				e = undefined;
+			}
+			*/
+			// ------------------------------------------  end
+			// ------------------------------------------ 自动模式二 start
+			var timer;
+			timer = setInterval(mouseClickFunction, 100);
+			
+			// ------------------------------------------  end
+			// 子弹发射调用
+			function mouseClickFunction() {
+				if (userCell == undefined || e == undefined) {
+					return;
+				}
+				for (var i=0; i<bulletNumber; i++) {
+					var newBulletCell = document.createElement('div');
+					newBulletCell.setAttribute('class', 'bullet');
+					newBulletCell.style.left = e.clientX + 13 - (i * 13) + 'px';
+					newBulletCell.style.top = e.clientY - 21 + 'px';
+					spaceAreaCell.appendChild(newBulletCell);
+					bulletCellList.push(newBulletCell);
+				}
+			}
+			// 敌方飞机生成调用
+			function buildArmy() {
+				var newArmyCell = document.createElement('div');
+				newArmyCell.setAttribute('class', 'army');
+				var randX = randNumber(document.body.clientWidth - 50);
+				newArmyCell.style.left = randX + 'px';
+				newArmyCell.style.top = 0 + 'px';
+				spaceAreaCell.appendChild(newArmyCell);
+				armyCellList.push(newArmyCell);
+			}
+			
+			// 子弹轨迹维持调用
+			setInterval(function() {
+					for(var i=0; i<bulletCellList.length; i++) {
+						var cell = bulletCellList[i];
+						var currentCellTop = cell.style.top.substring(0, cell.style.top.length - 2);
+						if (currentCellTop < 0) {
+							bulletCellList.splice(i, 1);
+							spaceAreaCell.removeChild(cell);
+							i--;
+							continue;
+						}
+						currentCellTop -= 1;
+						cell.style.top = currentCellTop + 'px';
+					}
+				}, 1);
+				
+			// 敌方飞机飞行状态的维持调用
+			setInterval(function() {
+					for(var i=0; i<armyCellList.length; i++) {
+						var cell = armyCellList[i];
+						var currentCellTop = parseInt(cell.style.top.substring(0, cell.style.top.length - 2));
+						currentCellTop += 2;
+						// console.log(currentCellTop);
+						if (currentCellTop > window.screen.height) {
+							armyCellList.splice(i, 1);
+							spaceAreaCell.removeChild(cell);
+							i--;
+							continue;
+						}
+						cell.style.top = currentCellTop + 'px';
+						// 碰撞检测，检查是否撞到子弹
+						for(var j=0; j<bulletCellList.length; j++) {
+							if (checkBulletWithArmy(bulletCellList[j], cell)) {
+								spaceAreaCell.removeChild(bulletCellList[j]);
+								bulletCellList.splice(j, 1);
+								spaceAreaCell.removeChild(cell);
+								armyCellList.splice(i, 1);
+								cell = undefined;
+								i--;
+								break;
+							}
+						}
+						// 碰撞检测，检查是否撞到玩家
+						if (cell != undefined && userCell != undefined && checkBulletWithArmy(userCell, cell) ) { 
+							spaceAreaCell.removeChild(userCell);
+							userCell = undefined;
+							document.getElementById("gameOverPage").style.display = "";
+						}
+							
+					}
+				}, 10);
+				
+			// 检测子弹与飞机是否碰撞（碰撞检测）
+			function checkBulletWithArmy(cellA, cellB) {
+				// 转换两个元素左上角的坐标（将带px的字符串转换为整数值）
+				cellA.currentLeft = parseInt(cellA.style.left.substring(0, cellA.style.left.length - 2));
+				cellA.currentTop = parseInt(cellA.style.top.substring(0, cellA.style.top.length - 2));
+				cellB.currentLeft = parseInt(cellB.style.left.substring(0, cellB.style.left.length - 2));
+				cellB.currentTop = parseInt(cellB.style.top.substring(0, cellB.style.top.length - 2));
+				if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				// 将cellA 与 cellB进行交换
+				var t = cellA;
+				cellA = cellB;
+				cellB = t;
+				if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				return false;
+			}
+			// 随机生成0到n之间的一个整数
+			function randNumber(n) {
+				return Math.ceil(Math.random() * n);
+			}
+		</script>
+	</body>
+</html>
+​

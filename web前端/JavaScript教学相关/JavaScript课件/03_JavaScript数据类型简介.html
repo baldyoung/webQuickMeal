@@ -1,0 +1,110 @@
+<!-- saved from url=(0140)file:///C:/Users/Administrator/Desktop/JavaScript%E6%95%99%E6%A1%88/03_JavaScript%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%AE%80%E4%BB%8B.html -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<h2>变量的数据类型</h2>
+
+		<h3>为什么需要数据类型</h3>
+
+		<p>在计算机中，不同的数据所需占用的存储空间不同，为了充分利用存储空间，于是定义了不同的数据类型。而且，不同的数据类型，寓意也不同。</p>
+
+		<p>我们都知道，无论这个变量是字符串类型，还是数字类型，我们都可以直接用 <code>var</code> 去定义它。比如：</p>
+
+		<pre>
+var a = 'hello word';
+var b = 123;
+</pre>
+
+
+		<p>为什么可以这样做呢？这是因为：JavaScript 是一种「弱类型语言」，或者说是一种「动态语言」，这意味着不需要提前声明变量的类型，在程序运行过程中，类型会自动被确定。</p>
+
+		<p><strong>JS 的变量数据类型，是在程序运行的过程中，根据等号右边的值来确定的</strong>。而且，变量的数据类型是可以变化的。比如说：</p>
+
+		<pre>
+var name = 'qianguyihao';
+name = 123; // 强制将变量 name 修改为 数字类型</pre>
+
+		<h3>JS中一共有六种数据类型</h3>
+
+		<ul>
+			<li>
+				<p><strong>基本数据类型（值类型）</strong>：String 字符串、Number 数值、Boolean 布尔值、Null 空值、Undefined 未定义。</p>
+			</li>
+			<li>
+				<p><strong>引用数据类型（引用类型）</strong>：Object 对象。</p>
+			</li>
+		</ul>
+
+		<p>注意：内置对象 Function、Array、Date、RegExp、Error等都是属于 Object 类型。也就是说，除了那五种基本数据类型之外，其他的，都称之为 Object类型。</p>
+
+		<blockquote>
+			<p>面试问：引用数据类型有几种？</p>
+			<p>面试答：只有一种，即 Object 类型。</p>
+		</blockquote>
+
+		<p><strong>数据类型之间最大的区别</strong>：</p>
+
+		<ul>
+			<li>
+				<p>基本数据类型：参数赋值的时候，传数值。</p>
+			</li>
+			<li>
+				<p>引用数据类型：参数赋值的时候，传地址（修改的同一片内存空间）。</p>
+			</li>
+		</ul>
+
+		<h2>一个经典的例子</h2>
+
+		<p><strong>基本数据类型举例</strong>：</p>
+
+		<pre>
+var a = 23;
+var b = a;
+a++;console.log(a); // 打印结果：24
+console.log(b); // 打印结果：23</pre>
+
+
+		<p>上面的代码中：a 和 b 都是基本数据类型，让 b 等于 a，然后<strong>改变 a 的值之后，发现 b 的值并没有被改变</strong>。</p>
+
+		<p>但是在引用数据类型中，就不同了，我们来看一看。</p>
+
+		<p><strong>引用数据类型举例</strong>：</p>
+
+		<pre>
+var obj1 = new Object();
+obj1.name = 'smyh';// 让 obj2 等于 obj1
+var obj2 = obj1;
+
+// 修改 obj1 的 name 属性
+obj1.name = 'vae';
+
+console.log(obj1.name); // 打印结果：vae
+console.log(obj2.name); // 打印结果：vae</pre>
+
+	
+
+		<p>上面的代码中：obj1 和 obj2 都是引用数据类型，让 obj2 等于 obj1，然后<strong>修改 obj1.name 的值之后，发现 obj2.name 的值也发生了改变</strong>。</p>
+
+		<p>从上面的例子中，可以反映出，基本数据类型和引用数据类型是有区别的。</p>
+
+		<p>那到底有什么区别呢？我们进一步往下看。</p>
+
+		<h2>栈内存和堆内存</h2>
+
+		<p>我们首先记住一句话：JS中，所有的<strong>变量</strong>都是保存在<strong>栈内存</strong>中的。</p>
+
+		<p>然后来看看下面的区别。</p>
+
+		<p><strong>基本数据类型</strong>：</p>
+
+		<p>基本数据类型的值，直接保存在栈内存中。值与值之间是独立存在，修改一个变量不会影响其他的变量。</p>
+
+		<p><strong>引用数据类型</strong>：</p>
+
+		<p>对象是保存到<strong>堆内存</strong>中的。每创建一个新的对象，就会在堆内存中开辟出一个新的空间；而<strong>变量保存了对象的内存地址</strong>（对象的引用），保存在栈内存当中。如果两个变量保存了同一个对象的引用，当一个通过一个变量修改属性时，另一个也会受到影响。</p>
+
+	</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style> 
+			#nameArea {
+				width:400px; 
+				background:black; 
+				text-align: center; 
+				font-size:50px; 
+				height:100px; 
+				font-weight:bolder; 
+				border:0px solid;
+			}
+			#startButton {
+				width:100px; 
+				text-align: center; 
+				font-size:18px; 
+				height:35px; 
+				font-weight:bolder; 
+			}
+			::-webkit-scrollbar {
+				width:3px;
+			}
+			#showList {
+				position:relative;
+				height:100%;
+				left:0px;
+				top:0px;
+			}
+			.peopleCell {
+				float:left; 
+				height:100%; 
+				text-align:center;
+			}
+		</style>
+	</head>
+	<body style='height:100%; background:black;'>
+		<div style='padding-top:100px;'>
+			<!-- 过程展示区域 -->
+			<div id='showArea' style='width:401px; height:120px; margin: 0 auto; overflow:hidden;'>
+				<div id='showList' style=''></div>
+				<div style='height:100%; width:1px; background:red; position:relative; top:-100%; left:200px;'></div>
+			</div>
+			<!-- 操作区 -->
+			<div style='width:102px; margin:0 auto; padding-top:80px;'>
+				<input id='startButton' type='button' style='' value='开始'  />
+			</div>
+		</div>
+		<!-- 数据源选择区 -->
+		<div style='position:fixed; top:10px; left:10px;'>
+			<input type='button' style='' value='数据源'  onclick='selectFileBtn.click()'/>
+			<input id='selectFileBtn' type='file' style='display:none;'  onchange='readFile()' />
+		</div>
+		<div style='position:fixed; top:0px; right:0px; color:white; width:160px; height:100%; border-left:1px solid white; padding-top:10px; padding-bottom:20px; overflow:auto;'>
+			<div style='text-align: center;'>
+				<h3>当前名册</h3>
+			</div>
+			<div id='dataArrayShow' style='text-align: center; padding-bottom:30px;'></div>
+		</div>
+		<script>
+			var dataArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*'];
+			var finalData = [];
+			var totalLength = 0;
+			var currentIndex = 0;
+			var sliderArea = document.getElementById('showList');
+			var currentDirc = -1; // 当前滑动的方向
+			var times = 3; // 随机点名动画运行的次数
+			var runTimeSpeed = 4;
+			
+			var hander = undefined;
+			var ppp = undefined;
+			var runTime = 30; // 初始速度参数（值越大，初始速度越慢）
+			var minRunTime = 50; // 速度的最小值参数（值越小，最小速度越快）
+			 // 速度递增参数（值越大，速度加得越快）
+			var nameAreaCell = document.getElementById('nameArea');
+			// 参数初始化调用
+			function init() {
+				ppp = -1 * getRandomNumber(totalLength);
+				console.log("目标："+ppp);
+				runTime = 1;
+				times = 0;
+				currentDirc = -1;
+				currentIndex = 0;
+				runTimeSpeed = 4;
+			}
+			// 随机点名过程中的动画效果
+			function run() {
+				sliderArea.style.left = currentIndex + 'px';
+				console.log(currentIndex);
+				if (times < 0 && currentIndex == ppp) {
+					hander = undefined;
+					return 
+				}
+				currentIndex += (currentDirc * runTimeSpeed);
+				if (currentIndex > 0) {
+					// 移动到了右侧尽头
+					currentDirc = -1;
+					if (times < 0) {
+						runTimeSpeed = 1;
+						currentIndex = 0;
+					}
+					times --;
+				} else if (currentIndex < (-1 * totalLength)) {
+					currentDirc = 1;
+				}
+				hander = setTimeout('run()', runTime);
+			}
+			// 开始随机点名
+			function start() {
+				if (hander == undefined) {
+					init();
+					// hander = setInterval('run()', 100);
+					hander = setTimeout('run()', runTime);
+				}
+			}
+			// 获取0到t之间的整数
+			function getRandomNumber(t) {
+				return Math.round(Math.random() * t);
+			}
+			// ------------------
+			// 为“开始”按钮增加事件响应函数
+			document.getElementById('startButton').addEventListener('click', start);
+			// 文件读取
+			function readFile() {
+				var codeType = prompt('请输入该文件的编码格式', 'utf-8');
+				var reader = new FileReader();
+				reader.onload = function() {
+					var data = this.result;
+					data = data.replace(/\n/g, ',');
+					data = data.replace(/\r/g, '');
+					dataArray = data.split(',');
+					finalData = loadData(dataArray);
+					console.log(finalData);
+					dataArrayShow.innerHTML = '';
+					for(var i=0, j=1; i<dataArray.length; i+=2, j++) {
+						dataArrayShow.innerHTML += j +'.' + dataArray[i] + ' (' + dataArray[i+1] + ') </br>';
+					}
+					//alert('已载入 '+dataArray.length+' 个人名');
+				}
+				reader.readAsText(selectFileBtn.files[0], codeType);
+			}
+			// 处理数据，将分数与人名进行关联
+			function loadData(t) {
+				var result = [];
+				var tHtml = '';
+				for(var i=0; i<t.length; i+=2) {
+					var tc = {
+						name : stringToV(t[i]),
+						score : t[i+1]
+					}
+					result.push(tc);
+				}
+				showData(result);
+				return result;
+			}
+			function showData(t) {
+				totalLength = 0;
+				var target = document.getElementById('showList');
+				target.innerHTML = '<div class="peopleCell" style="background:black; width:200px;"></div>';
+				var g = true;
+				for(var i=0; i<t.length; i++) {
+					var tc = t[i];
+					totalLength += parseInt(tc.score);
+					tHtml = '<div class="peopleCell" style="background:'+(g?'white':'gray')+'; width:'+tc.score+'px;">'+tc.name+'</div>';
+					target.innerHTML += tHtml;
+					g = !g;
+				}
+				target.innerHTML += '<div class="peopleCell" style="background:black; width:200px;"></div>';
+				target.innerHTML += "<div style='clear:both; margin:0; padding:0;'></div>";
+				target.style.width = totalLength + 500 + 'px';
+				console.log(totalLength);
+			}
+			// 将名字转换为竖直排列
+			function stringToV(str) {
+				var t = '';
+				for(var i=0; i<str.length; i++) {
+					t += str.charAt(i) + '</br>';
+				}
+				return t;
+			}
+			
+			// ------------- 
+		</script>
+		
+	</body>
+</html>

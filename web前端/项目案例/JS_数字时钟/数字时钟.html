@@ -1,0 +1,83 @@
+​
+<html>
+	<head>
+		<style>
+			#timeArea {
+				width:400px; 
+				height:75px; 
+				line-height:75px; 
+				font-size:50px; 
+				text-align:center;
+				background:; 
+				color:green;
+				margin:0 auto;
+			}
+			#dateArea {
+				width:400px; 
+				height:75px; 
+				line-height:75px; 
+				font-size:50px; 
+				text-align:center;
+				background:; 
+				color:green;
+				margin:0 auto;
+			}
+			#weekDayArea {
+				width:400px; 
+				height:75px; 
+				line-height:75px; 
+				font-size:50px; 
+				text-align:center;
+				background:;
+				color:green;
+				margin:0 auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div style='height:100%; background:black;'>
+			<div id='dateArea' ></div>
+			<div id='weekDayArea'></div>
+			<div id='timeArea' ></div>
+		</div>
+		<script>
+			var dateAreaCell = document.getElementById('dateArea');
+			var weekDayAreaCell = document.getElementById('weekDayArea');
+			var timeAreaCell = document.getElementById('timeArea');
+			var weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+			setInterval(function(){
+					var currentDateTime = new Date();
+					var temp;
+					// 更新日期
+					temp = numberFormate(currentDateTime.getFullYear());
+					temp += '-' + numberFormate(currentDateTime.getMonth()+1);
+					temp += '-' + numberFormate(currentDateTime.getDate());
+					dateAreaCell.innerHTML = temp;
+					// 更新星期
+					temp = weekDays[currentDateTime.getDay()];
+					weekDayAreaCell.innerHTML = temp;
+					// 更新时间
+					temp = numberFormate(currentDateTime.getHours());
+					temp += ':' + numberFormate(currentDateTime.getMinutes());
+					temp += ':' + numberFormate(currentDateTime.getSeconds());
+					temp += ':' + numberFormate(currentDateTime.getMilliseconds(), true);
+					timeAreaCell.innerHTML = temp;
+				}, 1);
+			// 对数值进行格式化
+			function numberFormate(t, k) {
+				if (k) {
+					if (t < 10) {
+						return '00'+t;
+					} else if (t < 100) {
+						return '0'+t;
+					}
+				} else if (t < 10) {
+					return '0' + t;
+				}
+				return t;
+			}
+		
+		</script>
+	</body>
+</html>
+​

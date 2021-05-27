@@ -1,0 +1,18 @@
+var now = new Date(); //不传参情况下默认返回当前时间
+//获取年
+var y=now.getFullYear();
+//获取月
+var m=now.getMonth()+1;//返回0-11
+//获取日
+var d= now.getDate();
+//获取小时
+var h =now.getHours();
+//获取分钟
+var i =now.getMinutes();
+//获取秒
+var s =now.getSeconds();
+//获取星期几
+var week =now.getDay();//0-6 0为周日
+var weeks=['日','一','二','三','四','五','六'];
+console.log(y+"年"+m+'月'+d+'日'+h+'时'+i+'分'+s+'秒'+'星期'+weeks[week]);//2017年7月17日17时55分41秒星期一
+var times =now.getTime();//获取时间戳

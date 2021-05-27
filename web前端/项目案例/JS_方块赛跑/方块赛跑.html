@@ -1,0 +1,90 @@
+​
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			body{
+				zoom:0.6;
+			}
+		</style>
+		<title></title>
+	</head>
+	<body >
+		<div  style='width:2100px; border-bottom: 3px solid black; margin-top:20px;'></div>
+		<div id='div1' style='width:100px; height:100px; background:red; background-size:100%; position:absolute; left:0px; top:200px; '></div>
+		<div id='div2' style='width:100px; height:100px; background:green; background-size:100%; position:absolute; left:0px; top:310px;'></div>
+		<div id='div3' style='width:100px; height:100px; background:black; background-size:100%; position:absolute; left:0px; top:420px;'></div>
+		<div style='width:100px; height:100%; border-left:2px solid black; position:absolute; top:0px; left:2000px;' ></div>
+		<div id='resultArea' style='width:200px; height:200px; position:fixed; top : 80px; left:500px; font-size:30px; font-weight:900; color:red;'>
+			比赛进行中</br>
+			加油打工人！
+		</div>
+		<script>
+			function init() {
+				for(var i=0; i<42; i++) {
+					var t = i * 50;
+					var temp = '<div style="position:absolute; text-align:center; font-size:8px; top:20px; left:'+t+'px;">|'+t+'m</div>';
+					document.body.innerHTML += temp;
+					console.log(i);
+				}
+			}
+			init();
+			var finishLength = 1910; // 汽车完成比赛需要移动的距离
+			var maxMoveUnit = 5; // 每帧画面汽车移动的距离
+			var pageMoveUnit = 1; // 画面移动的距离
+			var pageUpdateUnit = 5; // 每帧画面刷新的频率（单位毫秒）
+			var target1 = document.getElementById('div1');
+			var target2 = document.getElementById('div2');
+			var target3 = document.getElementById('div3');
+			var resultShowCell = document.getElementById('resultArea');
+			var i1=0;
+			var i2=0;
+			var i3=0;
+			document.scrollingElement.scrollLeft = 0;
+			console.log("Kk"+document.scrollingElement.scrollLeft);
+			var k1 = setInterval('move1()', pageUpdateUnit);
+			var k2 = setInterval('move2()', pageUpdateUnit);
+			var k3 = setInterval('move3()', pageUpdateUnit);
+			function move1() {
+				var temp = randNumber();
+				i1 += temp;
+				target1.style.left = i1 + 'px';
+				if (i1 > finishLength) {
+					showResult('红色方块赢了');
+					clearInterval(k1);
+				}
+				//document.scrollingElement.scrollLeft += pageMoveUnit;
+			}
+			function move2() {
+				i2 += randNumber();
+				target2.style.left = i2 + 'px';
+				if (i2 > finishLength) {
+					showResult('绿色方块赢了');
+					clearInterval(k2);
+				}
+			}
+			function move3() {
+				i3 += randNumber();
+				target3.style.left = i3 + 'px';
+				if (i3 > finishLength) {
+					showResult('黑色方块赢了');
+					clearInterval(k3);
+				}
+			}
+			// 生成一个0到maxMoveUnit之间的随机整数
+			function randNumber() {
+				return Math.ceil(Math.random() * maxMoveUnit);
+			}
+			var hasResult = false;
+			function showResult(t) {
+				if (hasResult == false) {
+					hasResult = true;
+					resultShowCell.innerHTML = t;
+				}
+			}
+		</script>
+	</body>
+</html>
+
+​

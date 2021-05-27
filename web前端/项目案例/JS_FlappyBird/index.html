@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<style type="text/css">
+		* {
+			padding: 0; margin: 0;
+		}
+		.main {
+			border: solid 1px black;
+			height: 512px;
+			background: url(img/bg_day.png) 0px 0;
+			margin: 20px auto;
+			position: relative;
+			
+			overflow: hidden;
+		}
+		.bird {
+			width: 37px; height: 27px;
+			background: url(img/bird0_0.png) no-repeat center;
+			position: absolute;
+			left: 50px; top: 200px;
+			z-index: 10;
+		}
+		.gameover {
+			width: 204px; height: 54px;
+			background: url(img/text_game_over.png);
+			margin: auto;
+			left: 0; top: 0; right: 0; bottom: 0;
+			position: absolute;
+			z-index: 100;
+		}
+		.scorePanel {
+			width:235px;
+			height:120px;
+			background:url(img/score_panel.png);
+			margin: auto;
+			left: 0; top: -230px; right: 0; bottom: 0;
+			position: absolute;
+			z-index: 150;
+		}
+		.title {
+			width: 178px; height: 48px;
+			background: url(img/title.png);
+			margin: auto;
+			left: 0; top: 0; right: 0; bottom: 0;
+			position: absolute;
+		}
+		.bluebird {
+			display: block;
+			margin: 70px auto;
+		}
+		.start {
+			display: block;
+			position: absolute;
+			top:300px;
+			cursor: pointer;
+		}
+		.pipe {
+			position: absolute;
+			right : -52px;
+			width: 52px; height: 320px;
+		}
+		.up {
+			background: url(img/pipe_up.png);
+		}
+		.down {
+			background: url(img/pipe_down.png);
+		}
+	</style>
+	<body>
+		<div class="main" style='width:600px;'>
+			<div class="bird" style="display: none; left: 50px; top: 200px;"></div>
+			
+			<div class="title"></div>
+			<img class="bluebird" src="img/bird1_0.png"/>
+			
+			<img class="start" src="img/button_play.png" style='left: 240px;'/>
+			
+			<!-- <img class='' src='img/text_game_over.png'/> -->
+			<div class='gameover' style='display:none;'></div>
+			<div class='scorePanel' style='display:none;'>
+				<span id='scoreText' style='position: relative; left:180px; top:34px; font-weight:bolder; color:green; '>120</span>
+			</div>
+		</div>
+		
+	</body>
+	<script type="text/javascript">
+		/*
+			高内聚，低耦合
+		
+		*/
+		
+		
+		
+		// 玩家分数
+		var score = 0;
+		
+		window.onload = function(){
+			console.log(screen)
+			var maxWidth = screen.availWidth;
+			if (maxWidth > 600) {
+				maxWidth = 600;
+			}
+			maxWidth -= 2;
+			console.log(maxWidth);
+			document.getElementsByClassName("main")[0].style.width = maxWidth + 'px';
+			document.getElementsByClassName("start")[0].style.left = (maxWidth / 2 - 50) + 'px';
+			// 游戏初始化
+			game.init();
+			
+		}
+		var ttt = true;
+		function randomInt(min, max) {
+			var len = Math.abs(max - min);
+			var t = Math.round(Math.random() * len);
+			return max - t;
+		}
+		function Controller(type){
+			//考虑可扩展性
+			switch(type) {
+				case "key" : return {
+					run : function(){
+						window.addEventListener("keydown", function(e){
+							bird.jump();
+						})
+					}
+				}; break;
+ 				case "mouse" : return {
+					run : function(){
+						window.addEventListener("mousedown", function(e){
+							bird.jump();
+						})
+					},
+				}; break;
+// 				case "sound" :
+// 				case "key&mouse" : 
+// 				case "soul"
+			}
+		}
+		
+		//管道
+		var PipeModule = {
+			pipeArray : [],
+			create : function(type, _height){
+				var newPipe = { 
+					self : undefined,
+					left : function(val) {
+						if (undefined != val) {
+							val = parseInt(val);
+							//this.self.style.right = val + "px";
+							this.self.style.left = game.width() - val + 'px';
+						}
+						return parseInt(this.self.style.left);
+					},
+					move : function() {
+						var r = 0;
+						var pipe = this;
+						//console.log('开始移动');
+						//console.log(pipe);
+						var t = setInterval(function(){
+							if (!game.running) {
+								return;
+							}
+							pipe.left(-52 + r);
+							if(pipe.left() <= 0) {
+								//console.log('准备销毁');
+								//console.log(pipe);
+								score += 0.5;
+								console.log("分数:"+score);
+								pipe.destory();
+								clearInterval(t);
+							}
+							if (ttt) {
+								console.log('flag:');
+								console.log(pipe.self);
+								console.log(bird.el);
+								ttt = false;
+							}
+							if (pzCheck(pipe.self, bird.el)) {
+								console.log('游戏over');
+								game.over(); 
+							}
+							r++;
+						}, 30);
+					},
+					destory : function() {
+						var list = PipeModule.pipeArray;
+						for(var i=0; i<list.length; i++) {
+							if (list[i] == this) {
+								list.splice(i, 1);
+								break;
+							}
+						}
+						this.self.remove();
+					}
+				};
+				newPipe.self = document.createElement("div");
+				switch(type) {
+					//上管道
+					case PipeModule.PIPE_TYPE_UP : {
+						newPipe.self.className = "pipe up"; 
+						newPipe.self.style.top = randomInt(-220, 0) + "px"; 
+						newPipe._height = 320 + parseInt(newPipe.self.style.top);
+						break;
+					}
+					case PipeModule.PIPE_TYPE_DOWN : {
+						//var temp = 500 - _height - 100;
+						newPipe.self.className = "pipe down";
+						//newPipe.self.style.bottom = -320 + temp + "px";
+						newPipe.self.style.top = 200 + _height + 'px';
+					}
+				}
+				game.append(newPipe);
+				PipeModule.pipeArray.push(newPipe);
+				newPipe.move();
+				return newPipe;
+			}
+			
+		}
+		PipeModule.PIPE_TYPE_UP = Symbol();
+		PipeModule.PIPE_TYPE_DOWN = Symbol();
+		PipeModule.PIPE_TYPE_AAA = Symbol();
+		
+		//蓝色的鸟
+		var blueBird = {
+			el : document.getElementsByClassName("bluebird")[0],
+			top : function(val){
+				if(val) this.el.style.marginTop = val + "px";
+				return this.el.style.marginTop;
+			},
+			fly : function(){
+				var x = 0;
+				this.t = setInterval(function(){
+					this.top(70 - 50*Math.sin( Math.PI/180 * x ));
+					x+=4;
+				}.bind(this), 20);
+			},
+			destroy : function(){
+				clearInterval(this.t);
+				this.el.remove();
+			}
+		}
+		
+		
+		//黄色的鸟
+		var bird = {
+			el : document.getElementsByClassName("bird")[0],
+			speed : 5,
+			timer : undefined,
+			top : function(val){
+				if(val) this.el.style.top = val + "px";
+				return this.el.offsetTop;
+			},
+			init : function(){
+				this.controller.run();
+			},
+			show : function(){
+				this.init();
+				this.el.style.display = "block";
+				this.fall();
+			},
+			jump : function(){
+				/* this.speed -= 10; */
+				this.speed -= 10;
+			},
+			fall : function(){
+				bird.timer = setInterval(function(){
+					if (!game.running) {
+						this.stop();
+					}
+					/* var tp = parseInt(this.top()+this.speed++); */
+					var tp = parseInt(this.top()+this.speed);
+					if (tp < 0) {
+						tp = 0;
+					}
+					this.top( tp );
+					if (tp > 500) {
+						// 掉下去了，游戏结束
+						game.over();
+					}
+					this.speed++;
+				}.bind(this),30)
+			},
+			stop : function() {
+				clearInterval(bird.timer);
+			},
+			controller : new Controller("mouse")
+		}
+		
+		
+		//Game
+		var game = {
+			running : false,
+			title : document.getElementsByClassName("title")[0],
+			startBtn : document.getElementsByClassName("start")[0],
+			el : document.getElementsByClassName("main")[0],
+			bgTimer : undefined,
+			background : {
+				move : function(){
+					var num = 0;
+					game.bgTimer = setInterval(function(){
+						game.el.style.backgroundPositionX = num-- + "px";
+					}, 30);
+				}
+			},
+			width : function(){
+				return game.el.offsetWidth;
+			},
+			append : function(pipe){
+				game.el.appendChild(pipe.self);
+			},
+			init : function(){
+				blueBird.fly();
+				
+				game.background.move();
+				
+				game.startBtn.addEventListener("click", function(){
+					//该消失的消失
+					blueBird.destroy();
+					game.title.remove();
+					game.startBtn.remove();
+					game.start();
+				})
+			},
+			autoCreatePipe : function(){
+				var p1 =  PipeModule.create(PipeModule.PIPE_TYPE_UP);
+				var p2 =  PipeModule.create(PipeModule.PIPE_TYPE_DOWN, p1._height);
+				setTimeout(game.autoCreatePipe, randomInt(3500, 10000));
+			},
+			start : function(){
+				game.running = true;
+				bird.show();
+				game.autoCreatePipe();
+			},
+			over : function(){
+				game.running = false;
+				clearInterval(game.bgTimer);
+				document.getElementById('scoreText').innerText = score;
+				document.getElementsByClassName('gameover')[0].style.display = '';
+				document.getElementsByClassName('scorePanel')[0].style.display = '';
+				console.log(document.getElementsByClassName('gameover')[0]);
+			}
+		}
+		// xxs
+		
+		// 矩形碰撞检测
+		function pzCheck(cellA, cellB) {
+			// 转换两个元素左上角的坐标（将带px的字符串转换为整数值）
+			cellA.currentLeft = parseInt(cellA.style.left.substring(0, cellA.style.left.length - 2));
+			cellA.currentTop = parseInt(cellA.style.top.substring(0, cellA.style.top.length - 2));
+			cellB.currentLeft = parseInt(cellB.style.left.substring(0, cellB.style.left.length - 2));
+			cellB.currentTop = parseInt(cellB.style.top.substring(0, cellB.style.top.length - 2));
+			if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+				if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+				if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+				if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+				if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			// 将cellA 与 cellB进行交换
+			var t = cellA;
+			cellA = cellB;
+			cellB = t;
+			if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+				if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+				if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+				if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+				if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+						return true;
+				}
+			}
+			return false;
+		}
+	</script>
+</html>

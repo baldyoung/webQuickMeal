@@ -1,0 +1,214 @@
+<html>
+	<head>
+		<style>
+			.redDiv {
+				position:absolute;
+				background:red;
+			}
+			.greenCircle {
+				position:absolute;
+				background:green;
+				width:40px;
+				height:40px;
+				border-radius:50%;
+			}
+			.minGreenCircle {
+				position:absolute;
+				background-color: green;
+				width:10px;
+				height:10px;
+				border-radius: 50%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='result' style='position:absolute; top:50px; left:47%; color:red; font-size:30px; font-weight:bolder; text-align: center;'></div>
+		<div class='greenCircle'></div>
+		
+		<script>
+			// 红色方块的宽和高
+			var redDivWidth = 50;
+			var redDivHeight = 50;
+			// 网页的最大可视宽度
+			var screenMaxWidth = window.screen.availWidth - redDivWidth; 
+			// 网页的最大可视高度
+			var screenMaxHeight = window.screen.availHeight - redDivHeight - 120; 
+			// 标识当前游戏是否结束
+			var isOver = false;
+			// 统计当前飞出（成功逃过拦截）的红色方块的数量
+			var numberOfZZ = 0;
+			// 最大可飞出（逃过拦截）的红色方块的数量
+			var maxNumberOfZZ = 10;
+			// 结果显示区域
+			var resultCell = document.getElementById('result');
+			
+			
+			// -------- 第一部分
+			// 用于存储所有创建的红色方块
+			var redDivArray = [];
+			// 第一步：随机在顶部生成红色方块
+			function createRandomRedDiv() {
+				if (isOver) {
+					return;
+				}
+				var cell = document.createElement('div');
+				cell.setAttribute('class', 'redDiv');
+				cell.style.width = redDivWidth + 'px';
+				cell.style.height = redDivHeight + 'px';
+				cell.style.top = '0px';
+				cell.style.left = getRandomNumber(screenMaxWidth) + 'px';
+				redDivArray.push(cell);
+				// 将新创建的节点追加为body标签的子节点
+				document.body.appendChild(cell);
+			}
+			//createRandomRedDiv();
+			setInterval(createRandomRedDiv, 500);
+			// 第二步：控制红色方块向下移动
+			setInterval(function(){
+				for(var i=0; i<redDivArray.length; i++) {
+					var top = parseInt(redDivArray[i].style.top);
+					if (top >= screenMaxHeight) {
+						// 将该红色方块从网页中删除
+						redDivArray[i].remove();
+						// 将该红色方块从数组中删除
+						redDivArray.splice(i, 1);
+						i--;
+						numberOfZZ++;
+						resultCell.innerText = "拦截失败的数量:" + numberOfZZ;
+						if (numberOfZZ > maxNumberOfZZ) {
+							isOver = true;
+							resultCell.innerText = '拦截失败，任务结束';
+						}
+						continue;
+					}
+					redDivArray[i].style.top = top + 1 + 'px';
+					if (checkPZ(greenCircleCell, redDivArray[i])) {
+						greenCircleCell.remove();
+						isOver = true;
+						resultCell.innerText = '拦截失败，任务结束';
+						return;
+					}
+					for(var j=0; j<minGreenCircleArray.length; j++) {
+						if (checkPZ(redDivArray[i], minGreenCircleArray[j]) == true) {
+							// 将该红色方块从网页中删除
+							redDivArray[i].remove();
+							// 将该红色方块从数组中删除
+							redDivArray.splice(i, 1);
+							minGreenCircleArray[j].remove();
+							minGreenCircleArray.splice(j, 1);
+							i--;
+							break;
+						}
+					}
+				}
+			}, 10);
+			// 第三步：将飞出屏幕的红色方块删除
+			
+			// -------- 第二部分
+			var greenCircleCell = document.getElementsByClassName('greenCircle')[0];
+			var minGreenCircleArray = [];
+			// 第一步：实现通过鼠标控制绿色圆移动
+			window.onmousemove = function(e){
+				if (isOver) {
+					return;
+				}
+				var x = e.clientX;
+				var y = e.clientY;
+				greenCircleCell.style.top = y + 'px';
+				greenCircleCell.style.left = x + 'px';
+			}
+			// 第二步：实现单击鼠标生成子弹
+			window.onclick = function(e) {
+				if (isOver) {
+					return;
+				}
+				var x = e.clientX;
+				var y = e.clientY;
+				var cell = document.createElement('div');
+				cell.setAttribute('class', 'minGreenCircle');
+				cell.style.top = y - 5 + 'px';
+				cell.style.left = x + 15 + 'px';
+				document.body.appendChild(cell);
+				minGreenCircleArray.push(cell);
+			}
+			// 第三步：实现生成的子弹向上飞行
+			setInterval(function(){
+				for(var i=0; i<minGreenCircleArray.length; i++) {
+					var top = parseInt(minGreenCircleArray[i].style.top);
+					top -= 1;
+					minGreenCircleArray[i].style.top = top + 'px';
+					if (top < -5) {
+						minGreenCircleArray[i].remove();
+						minGreenCircleArray.splice(i, 1);
+						i--;
+					}
+				}
+			}, 10);
+			// 第四步：将飞出屏幕的子弹删除
+			
+			// -------- 第三部分
+			// 第一步：子弹与红色方块的碰撞检测，并删除发生碰撞的子弹和红色方块
+			// 第二步：绿色圆和红色方块的碰撞检测，并判断游戏是否结束
+			// 第三步：统计红色方块飞出屏幕的数量，并判断游戏是否结束
+			
+			
+			// 返回一个0到t之间的随机整数
+			function getRandomNumber(t) {
+				return Math.round(Math.random() * t);
+			}
+			// 方块碰撞检测
+			function checkPZ(cellA, cellB) {
+				// 转换两个元素左上角的坐标（将带px的字符串转换为整数值）
+				cellA.currentLeft = parseInt(cellA.style.left.substring(0, cellA.style.left.length - 2));
+				cellA.currentTop = parseInt(cellA.style.top.substring(0, cellA.style.top.length - 2));
+				cellB.currentLeft = parseInt(cellB.style.left.substring(0, cellB.style.left.length - 2));
+				cellB.currentTop = parseInt(cellB.style.top.substring(0, cellB.style.top.length - 2));
+				if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				// 将cellA 与 cellB进行交换
+				var t = cellA;
+				cellA = cellB;
+				cellB = t;
+				if(cellA.currentLeft >= cellB.currentLeft && cellA.currentTop >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth)>= cellB.currentLeft   && cellA.currentTop >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && cellA.currentTop <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if(cellA.currentLeft >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if (cellA.currentLeft <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				if((cellA.currentLeft + cellA.clientWidth) >= cellB.currentLeft && (cellA.currentTop + cellA.clientHeight) >= cellB.currentTop) {
+					if ((cellA.currentLeft + cellA.clientWidth) <= (cellB.currentLeft + cellB.clientWidth) && (cellA.currentTop + cellA.clientHeight) <= (cellB.currentTop + cellB.clientHeight)) {
+							return true;
+					}
+				}
+				return false;
+			}
+		</script>
+	</body>
+</html>

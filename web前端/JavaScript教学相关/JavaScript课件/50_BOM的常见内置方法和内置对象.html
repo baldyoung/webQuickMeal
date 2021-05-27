@@ -1,0 +1,270 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+
+		<h2>BOM的介绍</h2>
+
+		<h3>JavaScript的组成</h3>
+
+		<p>JavaScript基础分为三个部分：</p>
+
+		<ul>
+			<li>
+				<p>ECMAScript：JavaScript的语法标准。包括变量、表达式、运算符、函数、if语句、for语句等。</p>
+			</li>
+			<li>
+				<p><strong>DOM</strong>：文档对象模型，操作<strong>网页上的元素</strong>的API。比如让盒子移动、变色、轮播图等。</p>
+			</li>
+			<li>
+				<p><strong>BOM</strong>：浏览器对象模型，操作<strong>浏览器部分功能</strong>的API。比如让浏览器自动滚动。</p>
+			</li>
+		</ul>
+
+		<h3>什么是BOM</h3>
+
+		<p>BOM：Browser Object Model，浏览器对象模型。</p>
+
+		<p><strong>BOM的结构图：</strong></p>
+
+		<p><img alt="" src="./50_BOM的常见内置方法和内置对象_files/20180201_2052.png"></p>
+
+		<p>从上图也可以看出：</p>
+
+		<ul>
+			<li>
+				<p><strong>window对象是BOM的顶层(核心)对象</strong>，所有对象都是通过它延伸出来的，也可以称为window的子对象。</p>
+			</li>
+			<li>
+				<p>DOM也是BOM的一部分。</p>
+			</li>
+			<li>
+				<p><strong>window对象是JavaScript中的顶级对象</strong>。</p>
+			</li>
+			<li>
+				<p>全局变量、自定义函数也是window对象的属性和方法。</p>
+			</li>
+			<li>
+				<p>window对象下的属性和方法调用时，可以省略window。</p>
+			</li>
+		</ul>
+
+		<p>下面讲一下 <strong>BOM 的常见内置方法和内置对象</strong>。</p>
+
+		<h2>弹出系统对话框</h2>
+
+		<p>比如说，<code>alert(1)</code>是<code>window.alert(1)</code>的简写，因为它是window的子方法。</p>
+
+		<p>三种系统对话框</p>
+
+		<pre style='color:yellow;'>
+alert();   //提示框
+confirm(); //询问框
+prompt();  //输入框</pre>
+
+		<p><code></code>`</p>
+
+		<h2>打开窗口、关闭窗口</h2>
+
+		<p>1、打开窗口：</p>
+
+		<p style='color:red;'>window.open(url, target, param)</p>
+
+		<p><strong>参数解释：</strong></p>
+
+		<ul>
+			<li>
+				<p><span style='color:blue;'>url</span>：要打开的地址。</p>
+			</li>
+			<li>
+				<p><span style='color:blue;'>target</span>：新窗口的位置。可以是：<code>_blank</code> 、<code>_self</code>、 <code>_parent</code> 父框架。</p>
+			</li>
+			<li>
+				<p>param：新窗口的一些设置。</p>
+			</li>
+			<li>
+				<p>返回值：新窗口的句柄。</p>
+			</li>
+		</ul>
+		
+		<p ><strong>补充：</strong> param这个参数，可以填各种各样的参数，比如：</p>
+		<p style='color:orange;'>(注意这些参数在不同的浏览器上不一定兼容！）</p>
+		<ul style='font-size:10px;'>
+			<li>
+				<p>name：新窗口的名称，可以为空</p>
+			</li>
+			<li>
+				<p>features：属性控制字符串，在此控制窗口的各种属性，属性之间以逗号隔开。</p>
+			</li>
+			<li>
+				<p>fullscreen= { yes/no/1/0 } 是否全屏，默认no</p>
+			</li>
+			<li>
+				<p>channelmode= { yes/no/1/0 } 是否显示频道栏，默认no</p>
+			</li>
+			<li>
+				<p>toolbar= { yes/no/1/0 } 是否显示工具条，默认no</p>
+			</li>
+			<li>
+				<p>location= { yes/no/1/0 } 是否显示地址栏，默认no。（有的浏览器不一定支持）</p>
+			</li>
+			<li>
+				<p>directories = { yes/no/1/0 } 是否显示转向按钮，默认no</p>
+			</li>
+			<li>
+				<p>status= { yes/no/1/0 } 是否显示窗口状态条，默认no</p>
+			</li>
+			<li>
+				<p>menubar= { yes/no/1/0 } 是否显示菜单，默认no</p>
+			</li>
+			<li>
+				<p>scrollbars= { yes/no/1/0 } 是否显示滚动条，默认yes</p>
+			</li>
+			<li>
+				<p>resizable= { yes/no/1/0 } 是否窗口可调整大小，默认no</p>
+			</li>
+			<li>
+				<p>width=number 窗口宽度（像素单位）</p>
+			</li>
+			<li>
+				<p>height=number 窗口高度（像素单位）</p>
+			</li>
+			<li>
+				<p>top=number 窗口离屏幕顶部距离（像素单位）</p>
+			</li>
+			<li>
+				<p>left=number 窗口离屏幕左边距离（像素单位）</p>
+			</li>
+		</ul>
+		<p>2、关闭窗口：window.close()</p>
+		<p>3、代码举例：</p>
+		<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+	&lt;head lang="en"&gt;
+		&lt;meta charset="UTF-8"&gt;
+		&lt;title&gt;&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;a href=""&gt;点击我打开一个新的页面&lt;/a&gt;&lt;br&gt;
+		&lt;a href=""&gt;点击我关闭本页面&lt;/a&gt;
+		&lt;script&gt;
+			//新窗口 = window.open(地址,是否开新窗口,新窗口的各种参数);
+			var a1 = document.getElementsByTagName("a")[0];
+			var a2 = document.getElementsByTagName("a")[1];
+			a1.onclick = function () {
+			//举例1： window.open("http://www.jx.com","blank");
+				var json = {
+				"name": "helloworld",
+				"fullscreen": "no",
+				"location": "no",
+				"width": "100px",
+				"height": "100px",
+				"top": "100px",
+				"left": "100px"
+				};
+				window.open("http://www.baidu.com", "blank", json); //举例2
+			}
+			//关闭本页面
+			a2.onclick = function () {
+				window.close();
+			}
+
+		&lt;/script&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+		<h2>location对象</h2>
+
+		<p><code>window.location</code>可以简写成location。location相当于浏览器地址栏，可以将url解析成独立的片段。</p>
+
+		<h3>location对象的属性</h3>
+
+		<ul>
+			<li>
+				<p><strong>href</strong>: 代表当前浏览器地址栏中的地址</p>
+			</li>
+			<li>
+				<p><strong>hash</strong>: 返回url中#后面的内容，包含#</p>
+			</li>
+			<li>
+				<p><strong>host</strong>: 主机名，包括端口</p>
+			</li>
+			<li>
+				<p><strong>hostname</strong>: 主机名</p>
+			</li>
+			<li>
+				<p><strong>pathname</strong>: url中的路径部分</p>
+			</li>
+			<li>
+				<p><strong>protocol</strong>: 协议 一般是http、https</p>
+			</li>
+			<li>
+				<p><strong>search</strong>: 查询字符串</p>
+			</li>
+		</ul>
+
+		<p><strong>代码案例一：</strong></p>
+
+		<pre>
+&lt;body&gt;
+	&lt;div style='background:gray; width:100px; height:100px;'&gt;smyhvae&lt;/div&gt;
+	&lt;script&gt;
+	var div = document.getElementsByTagName("div")[0];
+	div.onclick = function () {
+		location.href = "http://www.baidu.com";   //点击div时，跳转到指定链接
+		// window.open("http://www.baidu.com","_blank"); //方式二
+	}
+	&lt;/script&gt;
+&lt;/body&gt;</pre>
+
+		<p><strong>代码案例二：</strong></p>
+
+		<p>有时候，当我们访问一个不存在的网页时，会提示5秒后自动跳转到指定页面，此时就可以用到location。举例：</p>
+		<pre>
+&lt;script&gt;
+	setTimeout(function () {
+		location.href = "http://www.baidu.com";
+	}, 5000);
+&lt;/script&gt;</pre>
+
+		<h3>location对象的方法</h3>
+
+		<ul>
+			<li>location.assign()：改变浏览器地址栏的地址，并记录到历史中
+				<p style='font-size:13px;'>(通过location.href 跳转网页时，等效于使用assign()。但项目中一般就是使用location.href 进行页面之间的跳转。)</p>
+			</li>
+			<li>
+				<p>location.replace()：替换浏览器地址栏的地址，不会记录到历史中</p>
+			</li>
+			<li>
+				<p>location.reload()：重新加载</p>
+			</li>
+		</ul>
+
+		<h2>navigator对象</h2>
+
+		<p>window.navigator 的一些属性可以获取客户端的一些信息。</p>
+
+		<ul>
+			<li>
+				<p>userAgent：系统，浏览器</p>
+			</li>
+			<li>
+				<p>platform：浏览器支持的系统，win/mac/linux</p>
+			</li>
+		</ul>
+
+		<p>举例：</p>
+
+		<pre>
+console.log(navigator.userAgent);
+console.log(navigator.platform);</pre>
+
+		<p>效果如下：</p>
+
+		<p><img alt="" src="./50_BOM的常见内置方法和内置对象_files/20180201_2140.png"></p>
+	</body>
+</html>
